@@ -44,6 +44,12 @@ func Get(ctx context.Context, uri string, headers ...Header) ([]byte, error) {
 	})
 }
 
+func Delete(ctx context.Context, uri string, headers ...Header) ([]byte, error) {
+	return Request(ctx, &RequestOptions{
+		URI: uri,
+	})
+}
+
 // PostJSON post json formatted request to service via http POST method
 func PostJSON(ctx context.Context, uri string, body interface{}, headers ...Header) ([]byte, error) {
 	return Request(ctx, &RequestOptions{
