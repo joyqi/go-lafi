@@ -100,19 +100,15 @@ func retrieveToken(ctx context.Context, endpointURL string, req interface{}, con
 		return nil, err
 	}
 
-	body, err := http.PostJSON(
+	resp := TokenResponse{}
+	err = http.Post(
 		ctx,
 		endpointURL,
 		req,
+		&resp,
 		http.Header{Key: "Authorization", Value: tenantToken},
 	)
 
-	if err != nil {
-		return nil, err
-	}
-
-	resp := TokenResponse{}
-	err = json.Unmarshal(body, &resp)
 	if err != nil {
 		return nil, err
 	}
@@ -140,7 +136,7 @@ func retrieveToken(ctx context.Context, endpointURL string, req interface{}, con
 func retrieveUserGroups(openId string, tenantToken string) ([]string, error) {
 	url := fmt.Sprintf(EndpointURL.UserGroupsApiURL+"?member_id=%s", openId)
 
-	body, err := http.Get(url, http.Header{Key: "Authorization", Value: "Bearer " + tenantToken})
+	err := http.Get(url, http.Header{Key: "Authorization", Value: "Bearer " + tenantToken})
 	if err != nil {
 		return nil, err
 	}

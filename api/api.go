@@ -1,10 +1,7 @@
 package api
 
-import "github.com/joyqi/go-oauth2-feishu/api/contact"
+import "github.com/joyqi/go-oauth2-feishu/oauth2"
 
-type Api interface {
-	contact.Group
-}
-
-type Client struct {
+type Api struct {
+	Client *oauth2.Client
 }

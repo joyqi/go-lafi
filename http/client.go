@@ -9,6 +9,8 @@ import (
 	"time"
 )
 
+type MethodRequest = func(ctx context.Context, uri string, body interface{}, data interface{}, headers ...Header) error
+
 // Header represents the HTTP header
 type Header struct {
 	Key   string
@@ -35,39 +37,47 @@ type RequestOptions struct {
 	Timeout time.Duration
 }
 
-// Get request service through http Get method
-func Get(ctx context.Context, uri string, headers ...Header) ([]byte, error) {
-	return Request(ctx, &RequestOptions{
-		URI:     uri,
-		Method:  http.MethodGet,
-		Headers: headers,
-	})
-}
+const (
+	MethodGet    = http.MethodGet
+	MethodPost   = http.MethodPost
+	MethodDelete = http.MethodDelete
+	MethodPut    = http.MethodPut
+	MethodPatch  = http.MethodPatch
+)
 
-func Delete(ctx context.Context, uri string, headers ...Header) ([]byte, error) {
-	return Request(ctx, &RequestOptions{
-		URI: uri,
-	})
-}
+var (
+	// Get request service through http Get method
+	Get = makeMethod(MethodGet)
 
-// PostJSON post json formatted request to service via http POST method
-func PostJSON(ctx context.Context, uri string, body interface{}, headers ...Header) ([]byte, error) {
-	return Request(ctx, &RequestOptions{
-		URI:         uri,
-		Method:      http.MethodPost,
-		Headers:     headers,
-		ContentType: "application/json; charset=utf-8",
-		JSONBody:    body,
-	})
+	Delete = makeMethod(MethodDelete)
+
+	// Post json formatted request to service via http POST method
+	Post = makeMethod(MethodPost)
+
+	Put = makeMethod(MethodPut)
+
+	Patch = makeMethod(MethodPatch)
+)
+
+func makeMethod(method string) MethodRequest {
+	return func(ctx context.Context, uri string, body interface{}, data interface{}, headers ...Header) error {
+		return Request(ctx, &RequestOptions{
+			URI:         uri,
+			Method:      method,
+			Headers:     headers,
+			ContentType: "application/json; charset=utf-8",
+			JSONBody:    body,
+		}, data)
+	}
 }
 
 // Request represents a request to a service endpoint
-func Request(ctx context.Context, opts *RequestOptions) ([]byte, error) {
+func Request(ctx context.Context, opts *RequestOptions, data interface{}) error {
 	var buf io.Reader
 
 	if opts.JSONBody != nil {
 		if str, err := json.Marshal(opts.JSONBody); err != nil {
-			return nil, err
+			return err
 		} else {
 			buf = bytes.NewBuffer(str)
 		}
@@ -76,7 +86,7 @@ func Request(ctx context.Context, opts *RequestOptions) ([]byte, error) {
 	req, err := http.NewRequestWithContext(ctx, opts.Method, opts.URI, buf)
 
 	if err != nil {
-		return nil, err
+		return err
 	}
 
 	c := &http.Client{Timeout: opts.Timeout}
@@ -92,15 +102,19 @@ func Request(ctx context.Context, opts *RequestOptions) ([]byte, error) {
 	resp, err := c.Do(req)
 
 	if err != nil {
-		return nil, err
+		return err
 	}
 
 	defer resp.Body.Close()
 
 	body, err := io.ReadAll(resp.Body)
 	if err != nil {
-		return nil, err
+		return err
 	}
 
-	return body, nil
+	if err = json.Unmarshal(body, data); err != nil {
+		return err
+	}
+
+	return nil
 }

@@ -2,7 +2,6 @@ package oauth2
 
 import (
 	"context"
-	"encoding/json"
 	"errors"
 	"github.com/joyqi/go-oauth2-feishu/http"
 	"time"
@@ -48,13 +47,8 @@ func (c *Config) TenantToken(ctx context.Context) (string, error) {
 			AppSecret: c.AppSecret,
 		}
 
-		body, err := http.PostJSON(ctx, TenantEndpointURL.TokenURL, req)
-		if err != nil {
-			return "", err
-		}
-
 		resp := TenantTokenResponse{}
-		err = json.Unmarshal(body, &resp)
+		err := http.Post(ctx, TenantEndpointURL.TokenURL, req, &resp)
 		if err != nil {
 			return "", err
 		}
