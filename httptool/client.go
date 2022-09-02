@@ -1,4 +1,4 @@
-package http
+package httptool
 
 import (
 	"bytes"
@@ -8,8 +8,6 @@ import (
 	"net/http"
 	"time"
 )
-
-type MethodRequest = func(ctx context.Context, uri string, body interface{}, data interface{}, headers ...Header) error
 
 // Header represents the HTTP header
 type Header struct {
@@ -35,35 +33,6 @@ type RequestOptions struct {
 
 	// Timeout is the HTTP timeout in seconds
 	Timeout time.Duration
-}
-
-var (
-	// Get request service through http GET method
-	Get = makeMethod(http.MethodDelete)
-
-	// Delete request service through http DELETE method
-	Delete = makeMethod(http.MethodDelete)
-
-	// Post json formatted request to service via http POST method
-	Post = makeMethod(http.MethodPost)
-
-	// Put request service through http PUT method
-	Put = makeMethod(http.MethodPut)
-
-	// Patch request service through http PATCH method
-	Patch = makeMethod(http.MethodPatch)
-)
-
-func makeMethod(method string) MethodRequest {
-	return func(ctx context.Context, uri string, body interface{}, data interface{}, headers ...Header) error {
-		return Request(ctx, &RequestOptions{
-			URI:         uri,
-			Method:      method,
-			Headers:     headers,
-			ContentType: "application/json; charset=utf-8",
-			JSONBody:    body,
-		}, data)
-	}
 }
 
 // Request represents a request to a service endpoint

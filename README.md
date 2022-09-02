@@ -1,2 +1,3 @@
-# go-oauth2-feishu
-golang 实现的飞书 oauth2 登录客户端
+# go-feishu
+
+golang 实现的飞书客户端

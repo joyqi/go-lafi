@@ -3,7 +3,7 @@ package oauth2
 import (
 	"context"
 	"errors"
-	"github.com/joyqi/go-oauth2-feishu/http"
+	"github.com/joyqi/go-feishu/httptool"
 	"time"
 )
 
@@ -89,12 +89,12 @@ func retrieveToken(ctx context.Context, endpointURL string, req interface{}, con
 	}
 
 	resp := TokenResponse{}
-	err = http.Post(
+	err = httpPost(
 		ctx,
 		endpointURL,
 		req,
 		&resp,
-		http.Header{Key: "Authorization", Value: tenantToken},
+		httptool.Header{Key: "Authorization", Value: tenantToken},
 	)
 
 	if err != nil {

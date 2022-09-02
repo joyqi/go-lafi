@@ -2,8 +2,7 @@ package api
 
 import (
 	"errors"
-	"github.com/joyqi/go-oauth2-feishu/oauth2"
-	"net/url"
+	"github.com/joyqi/go-feishu/oauth2"
 )
 
 type Api struct {
@@ -14,11 +13,6 @@ type Response[T any] struct {
 	Code int    `json:"code"`
 	Msg  string `json:"msg"`
 	Data T      `json:"data"`
-}
-
-type Param struct {
-	Key   string
-	Value string
 }
 
 // MakeApi make a standard Api request and handle the response accordingly
@@ -33,21 +27,4 @@ func MakeApi[T any](c *oauth2.Client, method string, uri string, body interface{
 	}
 
 	return &resp.Data, nil
-}
-
-func MakeURL(uri string, params ...Param) string {
-	u, err := url.Parse(uri)
-	if err != nil {
-		return uri
-	}
-
-	query := u.Query()
-	for _, param := range params {
-		if param.Value != "" {
-			query.Set(param.Key, param.Value)
-		}
-	}
-
-	u.RawQuery = query.Encode()
-	return u.String()
 }

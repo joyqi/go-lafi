@@ -1,18 +1,17 @@
 package oauth2
 
 import (
-	"bytes"
 	"context"
+	"github.com/joyqi/go-feishu/httptool"
 	"net/url"
 	"sync"
 	"time"
 )
 
 var EndpointURL = Endpoint{
-	AuthURL:          "https://open.feishu.cn/open-apis/authen/v1/index",
-	TokenURL:         "https://open.feishu.cn/open-apis/authen/v1/access_token",
-	RefreshTokenURL:  "https://open.feishu.cn/open-apis/authen/v1/refresh_access_token",
-	UserGroupsApiURL: "https://open.feishu.cn/open-apis/contact/v3/group/member_belong",
+	AuthURL:         "https://open.feishu.cn/open-apis/authen/v1/index",
+	TokenURL:        "https://open.feishu.cn/open-apis/authen/v1/access_token",
+	RefreshTokenURL: "https://open.feishu.cn/open-apis/authen/v1/refresh_access_token",
 }
 
 // Endpoint is the endpoint to connect to the server.
@@ -22,9 +21,6 @@ type Endpoint struct {
 
 	// RefreshTokenURL is the URL to refresh the token.
 	RefreshTokenURL string
-
-	// UserGroupsApiURL is the URL to retrieve user groups.
-	UserGroupsApiURL string
 }
 
 // Config represents the configuration of the oauth2 service
@@ -50,8 +46,6 @@ type Config struct {
 
 // AuthCodeURL is the URL to redirect users going through authentication
 func (c *Config) AuthCodeURL(state string) string {
-	var buf bytes.Buffer
-	buf.WriteString(EndpointURL.AuthURL)
 	v := url.Values{
 		"response_type": {"code"},
 		"app_id":        {c.AppID},
@@ -64,9 +58,7 @@ func (c *Config) AuthCodeURL(state string) string {
 		v.Set("state", state)
 	}
 
-	buf.WriteByte('?')
-	buf.WriteString(v.Encode())
-	return buf.String()
+	return httptool.MakeURL(EndpointURL.AuthURL, v)
 }
 
 // Exchange retrieve the token from access token endpoint

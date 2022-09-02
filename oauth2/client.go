@@ -2,11 +2,11 @@ package oauth2
 
 import (
 	"context"
-	"github.com/joyqi/go-oauth2-feishu/http"
+	"github.com/joyqi/go-feishu/httptool"
+	"net/http"
 )
 
-type MethodRequest = func(uri string, body interface{}, data interface{}) error
-
+// Client returns an authorized client for the given endpoint
 func (c *Config) Client(ctx context.Context) *Client {
 	return &Client{
 		ctx:  ctx,
@@ -25,15 +25,25 @@ func (c *Client) Request(method string, uri string, body interface{}, data inter
 		return err
 	}
 
-	header := http.Header{
+	header := httptool.Header{
 		Key:   "Authorization",
 		Value: "Bearer " + token,
 	}
 
-	return http.Request(c.ctx, &http.RequestOptions{
+	return httptool.Request(c.ctx, &httptool.RequestOptions{
 		URI:         uri,
 		Method:      method,
-		Headers:     []http.Header{header},
+		Headers:     []httptool.Header{header},
+		ContentType: "application/json; charset=utf-8",
+		JSONBody:    body,
+	}, data)
+}
+
+func httpPost(ctx context.Context, uri string, body interface{}, data interface{}, headers ...httptool.Header) error {
+	return httptool.Request(ctx, &httptool.RequestOptions{
+		URI:         uri,
+		Method:      http.MethodPost,
+		Headers:     headers,
 		ContentType: "application/json; charset=utf-8",
 		JSONBody:    body,
 	}, data)

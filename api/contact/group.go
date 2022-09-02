@@ -1,8 +1,10 @@
 package contact
 
 import (
-	"github.com/joyqi/go-oauth2-feishu/api"
+	"github.com/joyqi/go-feishu/api"
+	"github.com/joyqi/go-feishu/httptool"
 	"net/http"
+	"net/url"
 )
 
 var (
@@ -15,7 +17,7 @@ type MemberBelongData struct {
 }
 
 type GroupApi interface {
-	MemberBelong(openId string) (*api.Response[MemberBelongData], error)
+	MemberBelong(openId string) (*MemberBelongData, error)
 }
 
 type Group struct {
@@ -23,9 +25,6 @@ type Group struct {
 }
 
 func (a *Group) MemberBelong(openId string) (*MemberBelongData, error) {
-	url := api.MakeURL(GroupMemberBelongURL, api.Param{
-		Key:   "member_id",
-		Value: openId,
-	})
-	return api.MakeApi[MemberBelongData](a.Api.Client, http.MethodGet, url, nil)
+	u := httptool.MakeURL(GroupMemberBelongURL, url.Values{"member_id": {openId}})
+	return api.MakeApi[MemberBelongData](a.Api.Client, http.MethodGet, u, nil)
 }
