@@ -18,4 +18,7 @@ jobs:
           go-version: 1.18
 
       - name: Test
+        env:
+          APP_ID: $FEISHU_APP_ID
+          APP_SECRET: $FEISHU_APP_SECRET
         run: go test -v ./...

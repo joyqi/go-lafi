@@ -9,8 +9,8 @@ import (
 )
 
 var conf = &oauth2.Config{
-	AppID:       os.Getenv("FEISHU_APP_ID"),
-	AppSecret:   os.Getenv("FEISHU_APP_SECRET"),
+	AppID:       os.Getenv("APP_ID"),
+	AppSecret:   os.Getenv("APP_SECRET"),
 	RedirectURL: "https://example.com",
 }
 
