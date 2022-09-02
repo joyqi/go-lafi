@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"context"
 	"encoding/json"
+	"fmt"
 	"io"
 	"net/http"
 	"time"
@@ -15,6 +16,7 @@ type Header struct {
 	Value string
 }
 
+// RequestOptions represents the HTTP request options
 type RequestOptions struct {
 	// URI specifies the request's URI
 	URI string
@@ -48,7 +50,6 @@ func Request(ctx context.Context, opts *RequestOptions, data interface{}) error 
 	}
 
 	req, err := http.NewRequestWithContext(ctx, opts.Method, opts.URI, buf)
-
 	if err != nil {
 		return err
 	}
@@ -64,12 +65,15 @@ func Request(ctx context.Context, opts *RequestOptions, data interface{}) error 
 	}
 
 	resp, err := c.Do(req)
-
 	if err != nil {
 		return err
 	}
 
 	defer resp.Body.Close()
+
+	if resp.StatusCode != 200 {
+		return fmt.Errorf("response status code: %d", resp.StatusCode)
+	}
 
 	body, err := io.ReadAll(resp.Body)
 	if err != nil {
