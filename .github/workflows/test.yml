@@ -19,6 +19,6 @@ jobs:
 
       - name: Test
         env:
-          APP_ID: $FEISHU_APP_ID
-          APP_SECRET: $FEISHU_APP_SECRET
+          APP_ID: '${{ secrets.FEISHU_APP_ID }}'
+          APP_SECRET: '${{ secrets.FEISHU_APP_SECRET }}'
         run: go test -v ./...
