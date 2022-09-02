@@ -48,7 +48,7 @@ func TestGroup_MemberBelong(t *testing.T) {
 
 	_, err := a.MemberBelong(&GroupMemberBelongParams{
 		MemberId:     "9a4386bc",
-		MemberIdType: "user_id",
+		MemberIdType: UserIdTypeUserId,
 	})
 
 	if err != nil {

@@ -28,11 +28,11 @@ type GroupDeleteData struct {
 }
 
 type GroupMemberBelongParams struct {
-	MemberId     string `url:"member_id"`
-	MemberIdType string `url:"member_id_type" default:"open_id"`
-	GroupType    int    `url:"group_type" default:"1"`
-	PageSize     int    `url:"page_size" default:"500"`
-	PageToken    string `url:"page_token"`
+	MemberId     string     `url:"member_id"`
+	MemberIdType UserIdType `url:"member_id_type" default:"open_id"`
+	GroupType    int        `url:"group_type" default:"1"`
+	PageSize     int        `url:"page_size" default:"500"`
+	PageToken    string     `url:"page_token"`
 }
 
 type GroupMemberBelongData struct {
