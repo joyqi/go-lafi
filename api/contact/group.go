@@ -1,6 +1,7 @@
 package contact
 
 import (
+	"fmt"
 	"github.com/creasty/defaults"
 	"github.com/joyqi/go-feishu/api"
 	"github.com/joyqi/go-feishu/httptool"
@@ -8,8 +9,24 @@ import (
 )
 
 var (
+	GroupCreateURL       = "https://open.feishu.cn/open-apis/contact/v3/group"
+	GroupDeleteURL       = "https://open.feishu.cn/open-apis/contact/v3/group/%s"
 	GroupMemberBelongURL = "https://open.feishu.cn/open-apis/contact/v3/group/member_belong"
 )
+
+type GroupCreateParams struct {
+	GroupId     string `json:"group_id"`
+	Name        string `json:"name"`
+	Description string `json:"description"`
+	Type        int    `json:"type" default:"1"`
+}
+
+type GroupCreateData struct {
+	GroupId string `json:"group_id"`
+}
+
+type GroupDeleteData struct {
+}
 
 type GroupMemberBelongParams struct {
 	MemberId     string `url:"member_id"`
@@ -24,19 +41,25 @@ type GroupMemberBelongData struct {
 	HasMore   bool     `json:"has_more"`
 }
 
-type GroupApi interface {
-	MemberBelong(openId string) (*GroupMemberBelongData, error)
+type Group api.Api
+
+func (g *Group) Create(params *GroupCreateParams) (*GroupCreateData, error) {
+	if err := defaults.Set(params); err != nil {
+		return nil, err
+	}
+
+	return api.MakeApi[GroupCreateData](g.Client, http.MethodPost, GroupCreateURL, params)
 }
 
-type Group struct {
-	api.Api
+func (g *Group) Delete(groupId string) (*GroupDeleteData, error) {
+	return api.MakeApi[GroupDeleteData](g.Client, http.MethodDelete, fmt.Sprintf(GroupDeleteURL, groupId), nil)
 }
 
-func (a *Group) MemberBelong(params *GroupMemberBelongParams) (*GroupMemberBelongData, error) {
+func (g *Group) MemberBelong(params *GroupMemberBelongParams) (*GroupMemberBelongData, error) {
 	if err := defaults.Set(params); err != nil {
 		return nil, err
 	}
 
 	u := httptool.MakeStructureURL(GroupMemberBelongURL, params)
-	return api.MakeApi[GroupMemberBelongData](a.Api.Client, http.MethodGet, u, nil)
+	return api.MakeApi[GroupMemberBelongData](g.Client, http.MethodGet, u, nil)
 }
