@@ -6,7 +6,7 @@ import (
 	"net/http"
 )
 
-// Client returns an authorized client for the given endpoint
+// Client returns http client with an authorized token.
 func (c *Config) Client(ctx context.Context) *Client {
 	return &Client{
 		ctx:  ctx,
@@ -14,11 +14,13 @@ func (c *Config) Client(ctx context.Context) *Client {
 	}
 }
 
+// A Client represents a http client with an authorized token.
 type Client struct {
 	ctx  context.Context
 	conf *Config
 }
 
+// Request performs a http request to the given endpoint with the authorized token.
 func (c *Client) Request(method string, uri string, body interface{}, data interface{}) error {
 	token, err := c.conf.TenantToken(c.ctx)
 	if err != nil {

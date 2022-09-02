@@ -2,10 +2,12 @@ package httptool
 
 import (
 	"context"
+	"net"
 	"net/http"
 	"reflect"
 	"strings"
 	"testing"
+	"time"
 )
 
 type testResponse struct {
@@ -61,4 +63,23 @@ func TestJsonResponse(t *testing.T) {
 			t.Fail()
 		}
 	}
+}
+
+func TestTimeout(t *testing.T) {
+	resp := &testResponse{}
+	err := Request(context.Background(), &RequestOptions{
+		URI:     "https://httpbin.org/delay/3",
+		Method:  http.MethodGet,
+		Timeout: 2 * time.Second,
+	}, resp)
+
+	if err == nil {
+		t.Fail()
+	}
+
+	if err, ok := err.(net.Error); ok && err.Timeout() {
+		t.SkipNow()
+	}
+
+	t.Fail()
 }
