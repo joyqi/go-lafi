@@ -1,7 +1,6 @@
 package contact
 
 import (
-	"fmt"
 	"github.com/creasty/defaults"
 	"github.com/joyqi/go-feishu/api"
 	"github.com/joyqi/go-feishu/httptool"
@@ -10,7 +9,7 @@ import (
 
 var (
 	GroupCreateURL       = "https://open.feishu.cn/open-apis/contact/v3/group"
-	GroupDeleteURL       = "https://open.feishu.cn/open-apis/contact/v3/group/%s"
+	GroupDeleteURL       = "https://open.feishu.cn/open-apis/contact/v3/group/:group_id"
 	GroupMemberBelongURL = "https://open.feishu.cn/open-apis/contact/v3/group/member_belong"
 )
 
@@ -52,7 +51,8 @@ func (g *Group) Create(params *GroupCreateParams) (*GroupCreateData, error) {
 }
 
 func (g *Group) Delete(groupId string) (*GroupDeleteData, error) {
-	return api.MakeApi[GroupDeleteData](g.Client, http.MethodDelete, fmt.Sprintf(GroupDeleteURL, groupId), nil)
+	u := httptool.MakeTemplateURL(GroupDeleteURL, map[string]string{"group_id": groupId})
+	return api.MakeApi[GroupDeleteData](g.Client, http.MethodDelete, u, nil)
 }
 
 func (g *Group) MemberBelong(params *GroupMemberBelongParams) (*GroupMemberBelongData, error) {
