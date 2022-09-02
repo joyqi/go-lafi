@@ -2,13 +2,13 @@ package oauth2
 
 import (
 	"context"
-	"fmt"
+	"os"
 	"testing"
 )
 
 var conf = &Config{
-	AppID:       "cli_slkdjalasdkjasd",
-	AppSecret:   "dskLLdkasdjlasdKK",
+	AppID:       os.Getenv("APP_ID"),
+	AppSecret:   os.Getenv("APP_SECRET"),
 	RedirectURL: "https://example.com",
 }
 
@@ -21,11 +21,9 @@ func TestConfig_AuthCodeURL(t *testing.T) {
 }
 
 func TestConfig_TenantToken(t *testing.T) {
-	token, err := conf.TenantToken(context.Background())
+	_, err := conf.TenantToken(context.Background())
 
 	if err != nil {
 		t.Error(err)
 	}
-
-	fmt.Println(token)
 }

@@ -25,6 +25,6 @@ type Group struct {
 }
 
 func (a *Group) MemberBelong(openId string) (*MemberBelongData, error) {
-	u := httptool.MakeURL(GroupMemberBelongURL, url.Values{"member_id": {openId}})
+	u := httptool.MakeURL(GroupMemberBelongURL, url.Values{"member_id": {openId}, "member_id_type": {"user_id"}})
 	return api.MakeApi[MemberBelongData](a.Api.Client, http.MethodGet, u, nil)
 }
