@@ -2,9 +2,7 @@ package oauth2
 
 import (
 	"context"
-	"encoding/json"
 	"errors"
-	"fmt"
 	"github.com/joyqi/go-oauth2-feishu/http"
 	"time"
 )
@@ -13,7 +11,6 @@ type Token struct {
 	AccessToken  string
 	RefreshToken string
 	Expiry       time.Time
-	Groups       []string
 }
 
 type TokenSource struct {
@@ -55,15 +52,6 @@ type TokenResponse struct {
 
 		// ExpiresIn is the number of seconds the token will be valid
 		ExpiresIn int64 `json:"expires_in"`
-	} `json:"data"`
-}
-
-type UserGroupsResponse struct {
-	Code int    `json:"code"`
-	Msg  string `json:"msg"`
-	Data struct {
-		GroupList []string `json:"group_list,flow"`
-		HasMore   bool     `json:"has_more"`
 	} `json:"data"`
 }
 
@@ -117,39 +105,11 @@ func retrieveToken(ctx context.Context, endpointURL string, req interface{}, con
 		return nil, errors.New(resp.Msg)
 	}
 
-	groups, err := retrieveUserGroups(resp.Data.OpenId, tenantToken)
-	if err != nil {
-		return nil, err
-	}
-
 	token := &Token{
 		AccessToken:  resp.Data.AccessToken,
 		RefreshToken: resp.Data.RefreshToken,
 		Expiry:       time.Unix(resp.Data.ExpiresIn, 0),
-		Groups:       groups,
 	}
 
 	return token, nil
-}
-
-// retrieveUserGroups retrieves the user groups associated with the given user ID.
-func retrieveUserGroups(openId string, tenantToken string) ([]string, error) {
-	url := fmt.Sprintf(EndpointURL.UserGroupsApiURL+"?member_id=%s", openId)
-
-	err := http.Get(url, http.Header{Key: "Authorization", Value: "Bearer " + tenantToken})
-	if err != nil {
-		return nil, err
-	}
-
-	resp := UserGroupsResponse{}
-	err = json.Unmarshal(body, &resp)
-	if err != nil {
-		return nil, err
-	}
-
-	if resp.Code != 0 {
-		return nil, errors.New(resp.Msg)
-	}
-
-	return resp.Data.GroupList, nil
 }

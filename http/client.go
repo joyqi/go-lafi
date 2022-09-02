@@ -37,26 +37,21 @@ type RequestOptions struct {
 	Timeout time.Duration
 }
 
-const (
-	MethodGet    = http.MethodGet
-	MethodPost   = http.MethodPost
-	MethodDelete = http.MethodDelete
-	MethodPut    = http.MethodPut
-	MethodPatch  = http.MethodPatch
-)
-
 var (
-	// Get request service through http Get method
-	Get = makeMethod(MethodGet)
+	// Get request service through http GET method
+	Get = makeMethod(http.MethodDelete)
 
-	Delete = makeMethod(MethodDelete)
+	// Delete request service through http DELETE method
+	Delete = makeMethod(http.MethodDelete)
 
 	// Post json formatted request to service via http POST method
-	Post = makeMethod(MethodPost)
+	Post = makeMethod(http.MethodPost)
 
-	Put = makeMethod(MethodPut)
+	// Put request service through http PUT method
+	Put = makeMethod(http.MethodPut)
 
-	Patch = makeMethod(MethodPatch)
+	// Patch request service through http PATCH method
+	Patch = makeMethod(http.MethodPatch)
 )
 
 func makeMethod(method string) MethodRequest {
