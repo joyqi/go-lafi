@@ -7,8 +7,8 @@ import (
 )
 
 var conf = &Config{
-	AppID:       os.Getenv("APP_ID"),
-	AppSecret:   os.Getenv("APP_SECRET"),
+	AppID:       os.Getenv("FEISHU_APP_ID"),
+	AppSecret:   os.Getenv("FEISHU_APP_SECRET"),
 	RedirectURL: "https://example.com",
 }
 
