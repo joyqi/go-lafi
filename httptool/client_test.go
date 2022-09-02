@@ -16,8 +16,8 @@ type testResponse struct {
 	Headers map[string]string `json:"headers"`
 }
 
-type testJsonResponse struct {
-	Json testRequest `json:"json"`
+type testJSONResponse struct {
+	JSON testRequest `json:"json"`
 }
 
 type testRequest struct {
@@ -32,7 +32,7 @@ var req = testRequest{
 	Count: 1,
 }
 
-func TestGet(t *testing.T) {
+func TestRequest_Get(t *testing.T) {
 	resp := &testResponse{}
 	err := Request(context.Background(), &RequestOptions{
 		URI:    "https://httpbin.org/get",
@@ -44,11 +44,11 @@ func TestGet(t *testing.T) {
 	}
 }
 
-func TestJsonResponse(t *testing.T) {
+func TestRequest_JSONResponse(t *testing.T) {
 	methods := []string{http.MethodPost, http.MethodPut, http.MethodDelete, http.MethodPatch}
 
 	for _, method := range methods {
-		resp := &testJsonResponse{}
+		resp := &testJSONResponse{}
 		err := Request(context.Background(), &RequestOptions{
 			URI:      "https://httpbin.org/" + strings.ToLower(method),
 			Method:   method,
@@ -59,13 +59,13 @@ func TestJsonResponse(t *testing.T) {
 			t.Error(err)
 		}
 
-		if !reflect.DeepEqual(req, resp.Json) {
+		if !reflect.DeepEqual(req, resp.JSON) {
 			t.Fail()
 		}
 	}
 }
 
-func TestTimeout(t *testing.T) {
+func TestRequest_Timeout(t *testing.T) {
 	resp := &testResponse{}
 	err := Request(context.Background(), &RequestOptions{
 		URI:     "https://httpbin.org/delay/3",
