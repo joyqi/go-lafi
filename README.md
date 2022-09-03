@@ -9,7 +9,7 @@ go-feishu is a Go client library for accessing the Feishu API.
 The goals of this library are:
 
 1. Provide a complete and idiomatic Go client for the Feishu API.
-2. Provide a test suite to ensure API compatibility over time.
+2. Ensure that the library is well tested and documented.
 3. Practice my Go skills.🤖️
 
 ## Installation
