@@ -24,6 +24,8 @@ func MakeURL(uri string, params url.Values) string {
 	return u.String()
 }
 
+// MakeTemplateURL builds a URL by replacing the placeholders in the uri with the values in the params.
+// e.g. MakeTemplateURL("https://example.com/:id", map[string]string{"id": "123"}) returns "https://example.com/123"
 func MakeTemplateURL(uri string, params map[string]string) string {
 	re := regexp.MustCompile(`:([_a-z\d-]+)`)
 	return string(re.ReplaceAllFunc([]byte(uri), func(bytes []byte) []byte {
@@ -36,6 +38,9 @@ func MakeTemplateURL(uri string, params map[string]string) string {
 	}))
 }
 
+// MakeStructureURL builds a URL by using the structured params as the query string of the url.
+// e.g. MakeStructureURL("https://example.com/", &testParams{State: "test", UserName: "hello"})
+// returns "https://example.com/?state=test&user_name=hello"
 func MakeStructureURL(uri string, params interface{}) string {
 	u, err := url.Parse(uri)
 	if err != nil {
