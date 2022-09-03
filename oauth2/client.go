@@ -6,11 +6,11 @@ import (
 	"net/http"
 )
 
-// Client returns http client with an authorized token.
-func (c *Config) Client(ctx context.Context) *Client {
+// NewClient returns http client with an authorized token.
+func NewClient(ctx context.Context, ts ClientTokenSource) *Client {
 	return &Client{
 		ctx: ctx,
-		ts:  c,
+		ts:  ts,
 	}
 }
 

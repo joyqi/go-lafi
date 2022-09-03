@@ -79,10 +79,12 @@ func (s *TokenSource) ClientToken(ctx context.Context) (string, error) {
 	return tk.AccessToken, nil
 }
 
+// valid checks if the token is still valid
 func (s *TokenSource) valid() bool {
 	return time.Now().Add(time.Minute).Before(s.t.Expiry)
 }
 
+// refresh retrieves the token from the endpoint
 func (s *TokenSource) refresh() (*Token, error) {
 	req := &RefreshTokenRequest{
 		RefreshToken: s.t.RefreshToken,

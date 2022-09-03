@@ -2,11 +2,15 @@ package api
 
 import (
 	"errors"
-	"github.com/joyqi/go-feishu/oauth2"
 )
 
 type Api struct {
-	Client *oauth2.Client
+	Client
+}
+
+// Client defines the interface of api client
+type Client interface {
+	Request(method string, uri string, body interface{}, data interface{}) error
 }
 
 // Response represents the response data of a standard Api request
@@ -17,7 +21,7 @@ type Response[T any] struct {
 }
 
 // MakeApi make a standard Api request and handle the response accordingly
-func MakeApi[T any](c *oauth2.Client, method string, uri string, body interface{}) (*T, error) {
+func MakeApi[T any](c Client, method string, uri string, body interface{}) (*T, error) {
 	resp := &Response[T]{}
 	err := c.Request(method, uri, body, resp)
 
