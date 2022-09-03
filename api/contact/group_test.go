@@ -31,6 +31,55 @@ func TestGroup_Create(t *testing.T) {
 	}
 }
 
+func TestGroup_Get(t *testing.T) {
+	c := conf.Client(context.Background())
+	a := &Group{Client: c}
+
+	g, err := a.Get("test001")
+
+	if err != nil {
+		t.Error(err)
+	} else if g.Group.Name != "test group" {
+		t.Fail()
+	}
+}
+
+func TestGroup_Patch(t *testing.T) {
+	c := conf.Client(context.Background())
+	a := &Group{Client: c}
+
+	_, err := a.Patch("test001", &GroupPatchParams{
+		Name: "test group 2",
+	})
+
+	if err != nil {
+		t.Error(err)
+	}
+
+	g, err := a.Get("test001")
+
+	if err != nil {
+		t.Error(err)
+	} else if g.Group.Name != "test group 2" {
+		t.Fail()
+	}
+}
+
+func TestGroup_SimpleList(t *testing.T) {
+	c := conf.Client(context.Background())
+	a := &Group{Client: c}
+
+	g, err := a.SimpleList(&GroupSimpleListParams{
+		PageSize: 10,
+	})
+
+	if err != nil {
+		t.Error(err)
+	} else if len(g.GroupList) == 0 {
+		t.Fail()
+	}
+}
+
 func TestGroup_Delete(t *testing.T) {
 	c := conf.Client(context.Background())
 	a := &Group{Client: c}
