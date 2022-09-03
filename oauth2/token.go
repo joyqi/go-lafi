@@ -55,6 +55,7 @@ type TokenResponse struct {
 	} `json:"data"`
 }
 
+// Token returns a token if it's still valid, else will refresh the token
 func (s *TokenSource) Token() (*Token, error) {
 	if !s.valid() {
 		token, err := s.refresh()

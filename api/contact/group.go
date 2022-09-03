@@ -13,6 +13,7 @@ var (
 	GroupMemberBelongURL = "https://open.feishu.cn/open-apis/contact/v3/group/member_belong"
 )
 
+// GroupCreateParams represents the params of Group.Create
 type GroupCreateParams struct {
 	GroupId     string `json:"group_id"`
 	Name        string `json:"name"`
@@ -20,13 +21,16 @@ type GroupCreateParams struct {
 	Type        int    `json:"type" default:"1"`
 }
 
+// GroupCreateData represents the response data of Group.Create
 type GroupCreateData struct {
 	GroupId string `json:"group_id"`
 }
 
+// GroupDeleteData represents the response data of Group.Delete
 type GroupDeleteData struct {
 }
 
+// GroupMemberBelongParams represents the params of Group.MemberBelong
 type GroupMemberBelongParams struct {
 	MemberId     string     `url:"member_id"`
 	MemberIdType UserIdType `url:"member_id_type" default:"open_id"`
@@ -35,6 +39,7 @@ type GroupMemberBelongParams struct {
 	PageToken    string     `url:"page_token"`
 }
 
+// GroupMemberBelongData represents the response data of Group.MemberBelong
 type GroupMemberBelongData struct {
 	GroupList []string `json:"group_list,flow"`
 	HasMore   bool     `json:"has_more"`
@@ -55,6 +60,8 @@ func (g *Group) Delete(groupId string) (*GroupDeleteData, error) {
 	return api.MakeApi[GroupDeleteData](g.Client, http.MethodDelete, u, nil)
 }
 
+// MemberBelong returns the groups that the member belongs to.
+// See https://open.feishu.cn/document/uAjLw4CM/ukTMukTMukTM/reference/contact-v3/group/member_belong for more details.
 func (g *Group) MemberBelong(params *GroupMemberBelongParams) (*GroupMemberBelongData, error) {
 	if err := defaults.Set(params); err != nil {
 		return nil, err
