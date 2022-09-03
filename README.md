@@ -37,11 +37,50 @@ var conf = &oauth2.Config{
 Get the authorization URL:
 
 ```go
-url := conf.AuthCodeURL("state", "offline")
+url := conf.AuthCodeURL("your-state")
 ```
 
 Exchange the authorization code for an access token:
 
 ```go
 token, err := conf.Exchange(ctx, code)
+```
+
+Use TokenSource to persist the token and refresh it as needed:
+
+```go
+ts := conf.TokenSource(ctx, token)
+token, err := ts.Token()
+```
+
+### Feishu API
+
+Features:
+
+- contact
+  - [ ] User
+  - [ ] Department
+  - [x] Group
+  - [ ] Unit
+  - [ ] EmployeeTypeEnums
+  - [ ] CustomAttr
+  - [ ] Scope
+
+Initialize Feishu API client:
+
+```go
+client := conf.Client(ctx)
+```
+
+Use the client to access the Feishu API. For example, to list all groups:
+
+```go
+import "github.com/joyqi/go-feishu/contact"
+
+client := conf.Client(ctx)
+api := &contact.Group{Client: client}
+
+api.SimpleList(&contact.GroupSimpleListParams{
+    PageSize:  100,
+})
 ```
