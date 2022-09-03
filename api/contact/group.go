@@ -103,33 +103,33 @@ type Group api.Api
 
 // Create creates a group by given GroupCreateBody.
 // See https://open.feishu.cn/document/uAjLw4CM/ukTMukTMukTM/reference/contact-v3/group/create for more details.
-func (g *Group) Create(params *GroupCreateBody) (*GroupCreateData, error) {
-	if err := defaults.Set(params); err != nil {
+func (g *Group) Create(body *GroupCreateBody) (*GroupCreateData, error) {
+	if err := defaults.Set(body); err != nil {
 		return nil, err
 	}
 
-	return api.MakeApi[GroupCreateData](g.Client, http.MethodPost, GroupCreateURL, params)
+	return api.MakeApi[GroupCreateData](g.Client, http.MethodPost, GroupCreateURL, body)
 }
 
 // Delete deletes a group through group_id.
 // See https://open.feishu.cn/document/uAjLw4CM/ukTMukTMukTM/reference/contact-v3/group/delete for more details.
 func (g *Group) Delete(groupId string) (*GroupDeleteData, error) {
-	u := httptool.MakeTemplateURL(GroupURL, map[string]string{"group_id": groupId})
-	return api.MakeApi[GroupDeleteData](g.Client, http.MethodDelete, u, nil)
+	url := httptool.MakeTemplateURL(GroupURL, map[string]string{"group_id": groupId})
+	return api.MakeApi[GroupDeleteData](g.Client, http.MethodDelete, url, nil)
 }
 
 // Get retrieves the group information through group_id.
 // See https://open.feishu.cn/document/uAjLw4CM/ukTMukTMukTM/reference/contact-v3/group/get for more details.
 func (g *Group) Get(groupId string) (*GroupGetData, error) {
-	u := httptool.MakeTemplateURL(GroupURL, map[string]string{"group_id": groupId})
-	return api.MakeApi[GroupGetData](g.Client, http.MethodGet, u, nil)
+	url := httptool.MakeTemplateURL(GroupURL, map[string]string{"group_id": groupId})
+	return api.MakeApi[GroupGetData](g.Client, http.MethodGet, url, nil)
 }
 
 // Patch updates the specified group information by given GroupPatchBody.
 // See https://open.feishu.cn/document/uAjLw4CM/ukTMukTMukTM/reference/contact-v3/group/patch for more details.
-func (g *Group) Patch(groupId string, params *GroupPatchBody) (*GroupPatchData, error) {
-	u := httptool.MakeTemplateURL(GroupURL, map[string]string{"group_id": groupId})
-	return api.MakeApi[GroupPatchData](g.Client, http.MethodPatch, u, params)
+func (g *Group) Patch(groupId string, body *GroupPatchBody) (*GroupPatchData, error) {
+	url := httptool.MakeTemplateURL(GroupURL, map[string]string{"group_id": groupId})
+	return api.MakeApi[GroupPatchData](g.Client, http.MethodPatch, url, body)
 }
 
 // SimpleList retrieves the group list through given GroupSimpleListParams.
@@ -139,8 +139,8 @@ func (g Group) SimpleList(params *GroupSimpleListParams) (*GroupSimpleListData, 
 		return nil, err
 	}
 
-	u := httptool.MakeStructureURL(GroupSimpleListURL, params)
-	return api.MakeApi[GroupSimpleListData](g.Client, http.MethodGet, u, params)
+	url := httptool.MakeStructureURL(GroupSimpleListURL, params)
+	return api.MakeApi[GroupSimpleListData](g.Client, http.MethodGet, url, params)
 }
 
 // MemberBelong returns the groups that the member belongs to.
@@ -150,6 +150,6 @@ func (g *Group) MemberBelong(params *GroupMemberBelongParams) (*GroupMemberBelon
 		return nil, err
 	}
 
-	u := httptool.MakeStructureURL(GroupMemberBelongURL, params)
-	return api.MakeApi[GroupMemberBelongData](g.Client, http.MethodGet, u, nil)
+	url := httptool.MakeStructureURL(GroupMemberBelongURL, params)
+	return api.MakeApi[GroupMemberBelongData](g.Client, http.MethodGet, url, nil)
 }

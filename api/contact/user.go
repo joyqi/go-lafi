@@ -1,6 +1,11 @@
 package contact
 
-import "github.com/joyqi/go-feishu/api"
+import (
+	"github.com/creasty/defaults"
+	"github.com/joyqi/go-feishu/api"
+	"github.com/joyqi/go-feishu/httptool"
+	"net/http"
+)
 
 var (
 	UserCreateURL = "https://open.feishu.cn/open-apis/contact/v3/users"
@@ -30,5 +35,13 @@ type UserCreateData struct {
 
 type User api.Api
 
-func (u *User) Create(params UserCreateParams, body UserCreateBody) (UserCreateData, error) {
+// Create creates a user by given UserCreateParams and UserCreateBody.
+// See https://open.feishu.cn/document/uAjLw4CM/ukTMukTMukTM/reference/contact-v3/user/create for more details.
+func (u *User) Create(params *UserCreateParams, body *UserCreateBody) (*UserCreateData, error) {
+	if err := defaults.Set(&params); err != nil {
+		return nil, err
+	}
+
+	url := httptool.MakeStructureURL(UserCreateURL, params)
+	return api.MakeApi[UserCreateData](u.Client, http.MethodPost, url, body)
 }
