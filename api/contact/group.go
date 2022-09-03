@@ -7,7 +7,7 @@ import (
 	"net/http"
 )
 
-var (
+const (
 	GroupURL             = "https://open.feishu.cn/open-apis/contact/v3/group/:group_id"
 	GroupCreateURL       = "https://open.feishu.cn/open-apis/contact/v3/group"
 	GroupSimpleListURL   = "https://open.feishu.cn/open-apis/contact/v3/group/simplelist"
@@ -85,11 +85,11 @@ type GroupSimpleListData struct {
 
 // GroupMemberBelongParams represents the params of Group.MemberBelong
 type GroupMemberBelongParams struct {
-	MemberId     string     `url:"member_id"`
-	MemberIdType UserIdType `url:"member_id_type" default:"open_id"`
-	GroupType    GroupType  `url:"group_type" default:"1"`
-	PageSize     int        `url:"page_size" default:"500"`
-	PageToken    string     `url:"page_token"`
+	MemberId     string    `url:"member_id"`
+	MemberIdType string    `url:"member_id_type" default:"open_id"`
+	GroupType    GroupType `url:"group_type" default:"1"`
+	PageSize     int       `url:"page_size" default:"500"`
+	PageToken    string    `url:"page_token"`
 }
 
 // GroupMemberBelongData represents the response data of Group.MemberBelong
@@ -134,7 +134,7 @@ func (g *Group) Patch(groupId string, body *GroupPatchBody) (*GroupPatchData, er
 
 // SimpleList retrieves the group list through given GroupSimpleListParams.
 // See https://open.feishu.cn/document/uAjLw4CM/ukTMukTMukTM/reference/contact-v3/group/simplelist for more details.
-func (g Group) SimpleList(params *GroupSimpleListParams) (*GroupSimpleListData, error) {
+func (g *Group) SimpleList(params *GroupSimpleListParams) (*GroupSimpleListData, error) {
 	if err := defaults.Set(params); err != nil {
 		return nil, err
 	}

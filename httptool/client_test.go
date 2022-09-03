@@ -78,7 +78,7 @@ func TestRequest_Timeout(t *testing.T) {
 	}
 
 	if err, ok := err.(net.Error); ok && err.Timeout() {
-		t.SkipNow()
+		return
 	}
 
 	t.Fail()

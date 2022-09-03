@@ -7,22 +7,20 @@ import (
 	"net/http"
 )
 
-var (
+const (
 	UserCreateURL = "https://open.feishu.cn/open-apis/contact/v3/users"
 )
 
-type UserIdType string
-
 const (
-	UserIdTypeUserId  UserIdType = "user_id"
-	UserIdTypeOpenId             = "open_id"
-	UserIdTypeUnionId            = "union_id"
+	UserIdTypeUserId  = "user_id"
+	UserIdTypeOpenId  = "open_id"
+	UserIdTypeUnionId = "union_id"
 )
 
 type UserCreateParams struct {
-	UserIdType       UserIdType       `url:"user_id_type" default:"open_id"`
-	DepartmentIdType DepartmentIdType `url:"department_id_type" default:"department_id"`
-	ClientToken      string           `url:"client_token"`
+	UserIdType       string `url:"user_id_type" default:"open_id"`
+	DepartmentIdType string `url:"department_id_type" default:"department_id"`
+	ClientToken      string `url:"client_token"`
 }
 
 type UserCreateBody struct {

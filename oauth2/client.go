@@ -9,20 +9,25 @@ import (
 // Client returns http client with an authorized token.
 func (c *Config) Client(ctx context.Context) *Client {
 	return &Client{
-		ctx:  ctx,
-		conf: c,
+		ctx: ctx,
+		ts:  c,
 	}
+}
+
+// ClientTokenSource represents a token source that returns a client token.
+type ClientTokenSource interface {
+	ClientToken(ctx context.Context) (string, error)
 }
 
 // A Client represents a http client with an authorized token.
 type Client struct {
-	ctx  context.Context
-	conf *Config
+	ctx context.Context
+	ts  ClientTokenSource
 }
 
 // Request performs a http request to the given endpoint with the authorized token.
 func (c *Client) Request(method string, uri string, body interface{}, data interface{}) error {
-	token, err := c.conf.TenantToken(c.ctx)
+	token, err := c.ts.ClientToken(c.ctx)
 	if err != nil {
 		return err
 	}

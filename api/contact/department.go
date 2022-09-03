@@ -1,10 +1,8 @@
 package contact
 
-type DepartmentIdType string
-
 const (
-	DepartmentIdTypeDepartmentId     DepartmentIdType = "department_id"
-	DepartmentIdTypeOpenDepartmentId                  = "open_department_id"
+	DepartmentIdTypeDepartmentId     = "department_id"
+	DepartmentIdTypeOpenDepartmentId = "open_department_id"
 )
 
 type DepartmentI18nName struct {

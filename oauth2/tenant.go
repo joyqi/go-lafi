@@ -63,6 +63,11 @@ func (c *Config) TenantToken(ctx context.Context) (string, error) {
 	return c.tenantToken, nil
 }
 
+// ClientToken is an alias of TenantToken to implement the ClientTokenSource interface
+func (c *Config) ClientToken(ctx context.Context) (string, error) {
+	return c.TenantToken(ctx)
+}
+
 // TenantTokenValid returns true if the tenant token is valid
 func (c *Config) TenantTokenValid() bool {
 	return c.tenantToken != "" && time.Now().Add(time.Minute).Before(c.tenantTokenExpireAt)

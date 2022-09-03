@@ -69,6 +69,16 @@ func (s *TokenSource) Token() (*Token, error) {
 	return s.t, nil
 }
 
+// ClientToken is an alias of Token to implement the ClientTokenSource interface
+func (s *TokenSource) ClientToken(ctx context.Context) (string, error) {
+	tk, err := s.Token()
+	if err != nil {
+		return "", err
+	}
+
+	return tk.AccessToken, nil
+}
+
 func (s *TokenSource) valid() bool {
 	return time.Now().Add(time.Minute).Before(s.t.Expiry)
 }
