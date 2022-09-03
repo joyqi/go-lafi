@@ -24,8 +24,8 @@ const (
 	GroupTypeDynamic
 )
 
-// GroupCreateParams represents the params of Group.Create
-type GroupCreateParams struct {
+// GroupCreateBody represents the params of Group.Create
+type GroupCreateBody struct {
 	GroupId     string    `json:"group_id"`
 	Name        string    `json:"name"`
 	Description string    `json:"description"`
@@ -37,8 +37,8 @@ type GroupCreateData struct {
 	GroupId string `json:"group_id"`
 }
 
-// GroupPatchParams represents the params of Group.Patch
-type GroupPatchParams struct {
+// GroupPatchBody represents the params of Group.Patch
+type GroupPatchBody struct {
 	Name        string `json:"name"`
 	Description string `json:"description"`
 }
@@ -101,9 +101,9 @@ type GroupMemberBelongData struct {
 
 type Group api.Api
 
-// Create creates a group by given GroupCreateParams.
+// Create creates a group by given GroupCreateBody.
 // See https://open.feishu.cn/document/uAjLw4CM/ukTMukTMukTM/reference/contact-v3/group/create for more details.
-func (g *Group) Create(params *GroupCreateParams) (*GroupCreateData, error) {
+func (g *Group) Create(params *GroupCreateBody) (*GroupCreateData, error) {
 	if err := defaults.Set(params); err != nil {
 		return nil, err
 	}
@@ -125,9 +125,9 @@ func (g *Group) Get(groupId string) (*GroupGetData, error) {
 	return api.MakeApi[GroupGetData](g.Client, http.MethodGet, u, nil)
 }
 
-// Patch updates the specified group information by given GroupPatchParams.
+// Patch updates the specified group information by given GroupPatchBody.
 // See https://open.feishu.cn/document/uAjLw4CM/ukTMukTMukTM/reference/contact-v3/group/patch for more details.
-func (g *Group) Patch(groupId string, params *GroupPatchParams) (*GroupPatchData, error) {
+func (g *Group) Patch(groupId string, params *GroupPatchBody) (*GroupPatchData, error) {
 	u := httptool.MakeTemplateURL(GroupURL, map[string]string{"group_id": groupId})
 	return api.MakeApi[GroupPatchData](g.Client, http.MethodPatch, u, params)
 }

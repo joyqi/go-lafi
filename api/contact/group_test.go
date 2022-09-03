@@ -17,7 +17,7 @@ func TestGroup_Create(t *testing.T) {
 	c := conf.Client(context.Background())
 	a := &Group{Client: c}
 
-	data, err := a.Create(&GroupCreateParams{
+	data, err := a.Create(&GroupCreateBody{
 		GroupId: "test001",
 		Name:    "test group",
 	})
@@ -48,7 +48,7 @@ func TestGroup_Patch(t *testing.T) {
 	c := conf.Client(context.Background())
 	a := &Group{Client: c}
 
-	_, err := a.Patch("test001", &GroupPatchParams{
+	_, err := a.Patch("test001", &GroupPatchBody{
 		Name: "test group 2",
 	})
 
