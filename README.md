@@ -33,3 +33,15 @@ var conf = &oauth2.Config{
     RedirectURL:  "your-redirect-url",
 }
 ```
+
+Get the authorization URL:
+
+```go
+url := conf.AuthCodeURL("state", "offline")
+```
+
+Exchange the authorization code for an access token:
+
+```go
+token, err := conf.Exchange(ctx, code)
+```
