@@ -69,15 +69,20 @@ Features:
 Initialize Feishu API client:
 
 ```go
-client := conf.Client(ctx)
+import "github.com/joyqi/go-feishu/oauth2"
+
+client := oauth2.NewClient(ctx, conf)
 ```
 
 Use the client to access the Feishu API. For example, to list all groups:
 
 ```go
-import "github.com/joyqi/go-feishu/contact"
+import (
+    "github.com/joyqi/go-feishu/oauth2"	
+	"github.com/joyqi/go-feishu/api/contact"
+)
 
-client := conf.Client(ctx)
+client := oauth2.NewClient(ctx, conf)
 api := &contact.Group{Client: client}
 
 api.SimpleList(&contact.GroupSimpleListParams{
