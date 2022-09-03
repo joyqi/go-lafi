@@ -9,6 +9,7 @@ type Api struct {
 	Client *oauth2.Client
 }
 
+// Response represents the response data of a standard Api request
 type Response[T any] struct {
 	Code int    `json:"code"`
 	Msg  string `json:"msg"`
