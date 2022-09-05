@@ -8,20 +8,11 @@ import (
 	"time"
 )
 
-var EndpointURL = Endpoint{
-	AuthURL:         "https://open.feishu.cn/open-apis/authen/v1/index",
-	TokenURL:        "https://open.feishu.cn/open-apis/authen/v1/access_token",
-	RefreshTokenURL: "https://open.feishu.cn/open-apis/authen/v1/refresh_access_token",
-}
-
-// Endpoint is the endpoint to connect to the server.
-type Endpoint struct {
-	AuthURL  string
-	TokenURL string
-
-	// RefreshTokenURL is the URL to refresh the token.
-	RefreshTokenURL string
-}
+const (
+	AuthURL         = "https://open.feishu.cn/open-apis/authen/v1/index"
+	TokenURL        = "https://open.feishu.cn/open-apis/authen/v1/access_token"
+	RefreshTokenURL = "https://open.feishu.cn/open-apis/authen/v1/refresh_access_token"
+)
 
 // Config represents the configuration of the oauth2 service
 type Config struct {
@@ -58,7 +49,7 @@ func (c *Config) AuthCodeURL(state string) string {
 		v.Set("state", state)
 	}
 
-	return httptool.MakeURL(EndpointURL.AuthURL, v)
+	return httptool.MakeURL(AuthURL, v)
 }
 
 // Exchange retrieve the token from access token endpoint
@@ -68,7 +59,7 @@ func (c *Config) Exchange(ctx context.Context, code string) (*Token, error) {
 		Code:      code,
 	}
 
-	return retrieveToken(ctx, EndpointURL.TokenURL, req, c)
+	return retrieveToken(ctx, TokenURL, req, c)
 }
 
 // TokenSource returns a TokenSource to grant token access

@@ -91,7 +91,7 @@ func (s *TokenSource) refresh() (*Token, error) {
 		GrantType:    "refresh_token",
 	}
 
-	return retrieveToken(s.ctx, EndpointURL.RefreshTokenURL, req, s.conf)
+	return retrieveToken(s.ctx, RefreshTokenURL, req, s.conf)
 }
 
 // retrieveToken retrieves the token from the endpoint

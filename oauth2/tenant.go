@@ -6,12 +6,11 @@ import (
 	"time"
 )
 
-var TenantEndpointURL = TenantEndpoint{
-	TokenURL: "https://open.feishu.cn/open-apis/auth/v3/tenant_access_token/internal",
-}
+const TenantTokenURL = "https://open.feishu.cn/open-apis/auth/v3/tenant_access_token/internal"
 
-type TenantEndpoint struct {
-	TokenURL string
+type TenantToken struct {
+	AccessToken string
+	Expiry      time.Time
 }
 
 // TenantTokenRequest represents a request to retrieve a tenant token
@@ -47,7 +46,7 @@ func (c *Config) TenantToken(ctx context.Context) (string, error) {
 		}
 
 		resp := TenantTokenResponse{}
-		err := httpPost(ctx, TenantEndpointURL.TokenURL, req, &resp)
+		err := httpPost(ctx, TenantTokenURL, req, &resp)
 		if err != nil {
 			return "", err
 		}
