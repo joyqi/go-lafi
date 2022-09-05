@@ -7,7 +7,12 @@ import (
 	"time"
 )
 
-type Token struct {
+type Token interface {
+	// AccessToken returns the access token.
+	AccessToken() string
+}
+
+type userAccessToken struct {
 	AccessToken  string
 	RefreshToken string
 	Expiry       time.Time

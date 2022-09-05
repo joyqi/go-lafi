@@ -3,6 +3,7 @@ package oauth2
 import (
 	"context"
 	"errors"
+	"sync"
 	"time"
 )
 
@@ -11,6 +12,7 @@ const TenantTokenURL = "https://open.feishu.cn/open-apis/auth/v3/tenant_access_t
 type TenantToken struct {
 	AccessToken string
 	Expiry      time.Time
+	mu          sync.Mutex
 }
 
 // TenantTokenRequest represents a request to retrieve a tenant token

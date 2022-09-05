@@ -78,8 +78,8 @@ Use the client to access the Feishu API. For example, to list all groups:
 
 ```go
 import (
-    "github.com/joyqi/go-feishu/oauth2"	
-	"github.com/joyqi/go-feishu/api/contact"
+    "github.com/joyqi/go-feishu/oauth2"
+    "github.com/joyqi/go-feishu/api/contact"
 )
 
 client := oauth2.NewClient(ctx, conf)
