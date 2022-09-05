@@ -5,7 +5,6 @@ import (
 	"github.com/joyqi/go-feishu/httptool"
 	"net/url"
 	"sync"
-	"time"
 )
 
 const (
@@ -25,14 +24,52 @@ type Config struct {
 	// RedirectURL is the URL to redirect users going through
 	RedirectURL string
 
-	// tenantTokenMu is the lock for tenant token request
-	tenantTokenMu sync.Mutex
+	// once is used to ensure tts is initialized only once.
+	once sync.Once
 
-	// tenantToken is the tenant token
-	tenantToken string
+	// tts is the tenant token source
+	tts TokenSource
+}
 
-	// tenantTokenExpireAt is the expiration time of the tenant token
-	tenantTokenExpireAt time.Time
+// A TokenSource is anything that can return a token.
+type TokenSource interface {
+	Token() (*Token, error)
+}
+
+// TokenRequest represents a request to retrieve a token from the server
+type TokenRequest struct {
+	GrantType string `json:"grant_type"`
+	Code      string `json:"code"`
+}
+
+// RefreshTokenRequest represents a request to refresh the token from the server
+type RefreshTokenRequest struct {
+	GrantType    string `json:"grant_type"`
+	RefreshToken string `json:"refresh_token"`
+}
+
+// TokenResponse represents the response from the Token service
+type TokenResponse struct {
+	// Code is the response status code
+	Code int `json:"code"`
+
+	// Msg is the response message in the response body
+	Msg string `json:"msg"`
+
+	// Data is the response body data
+	Data struct {
+		// OpenId represents the open ID of the user
+		OpenId string `json:"open_id"`
+
+		// AccessToken is the token used to access the application
+		AccessToken string `json:"access_token"`
+
+		// RefreshToken is the token used to refresh the user's access token
+		RefreshToken string `json:"refresh_token"`
+
+		// ExpiresIn is the number of seconds the token will be valid
+		ExpiresIn int64 `json:"expires_in"`
+	} `json:"data"`
 }
 
 // AuthCodeURL is the URL to redirect users going through authentication
@@ -59,14 +96,45 @@ func (c *Config) Exchange(ctx context.Context, code string) (*Token, error) {
 		Code:      code,
 	}
 
-	return retrieveToken(ctx, TokenURL, req, c)
+	return retrieveToken(ctx, TokenURL, req, c.TenantTokenSource(ctx))
 }
 
 // TokenSource returns a TokenSource to grant token access
-func (c *Config) TokenSource(ctx context.Context, t *Token) *TokenSource {
-	return &TokenSource{
+func (c *Config) TokenSource(ctx context.Context, t *Token) TokenSource {
+	return &reuseTokenSource{
 		ctx:  ctx,
 		conf: c,
 		t:    t,
 	}
+}
+
+// reuseTokenSource is a TokenSource that reuse the token if it's still valid
+type reuseTokenSource struct {
+	ctx  context.Context
+	conf *Config
+	t    *Token
+}
+
+// Token returns a token if it's still valid, else will refresh the token
+func (s *reuseTokenSource) Token() (*Token, error) {
+	if !s.t.Valid() {
+		token, err := s.refresh()
+		if err != nil {
+			return nil, err
+		}
+
+		s.t = token
+	}
+
+	return s.t, nil
+}
+
+// refresh retrieves the token from the endpoint
+func (s *reuseTokenSource) refresh() (*Token, error) {
+	req := &RefreshTokenRequest{
+		RefreshToken: s.t.RefreshToken,
+		GrantType:    "refresh_token",
+	}
+
+	return retrieveToken(s.ctx, RefreshTokenURL, req, s.conf.TenantTokenSource(s.ctx))
 }

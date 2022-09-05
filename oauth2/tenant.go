@@ -9,12 +9,6 @@ import (
 
 const TenantTokenURL = "https://open.feishu.cn/open-apis/auth/v3/tenant_access_token/internal"
 
-type TenantToken struct {
-	AccessToken string
-	Expiry      time.Time
-	mu          sync.Mutex
-}
-
 // TenantTokenRequest represents a request to retrieve a tenant token
 type TenantTokenRequest struct {
 	AppID     string `json:"app_id"`
@@ -36,40 +30,52 @@ type TenantTokenResponse struct {
 	Expire int64 `json:"expire"`
 }
 
-// TenantToken represents a tenant access token from tenant token endpoint
-func (c *Config) TenantToken(ctx context.Context) (string, error) {
-	defer c.tenantTokenMu.Unlock()
+// TenantTokenSource returns a token source that retrieves tokens from the tenant token endpoint
+func (c *Config) TenantTokenSource(ctx context.Context) TokenSource {
+	c.once.Do(func() {
+		c.tts = &tenantTokenSource{
+			ctx:  ctx,
+			conf: c,
+		}
+	})
 
-	c.tenantTokenMu.Lock()
-	if !c.TenantTokenValid() {
+	return c.tts
+}
+
+// tenantTokenSource is the token source of the tenant token endpoint
+type tenantTokenSource struct {
+	ctx  context.Context
+	conf *Config
+	t    *Token
+	mu   sync.Mutex
+}
+
+// Token retrieves a token from the tenant token endpoint
+func (s *tenantTokenSource) Token() (*Token, error) {
+	defer s.mu.Unlock()
+
+	s.mu.Lock()
+	if s.t == nil || !s.t.Valid() {
 		req := &TenantTokenRequest{
-			AppID:     c.AppID,
-			AppSecret: c.AppSecret,
+			AppID:     s.conf.AppID,
+			AppSecret: s.conf.AppSecret,
 		}
 
 		resp := TenantTokenResponse{}
-		err := httpPost(ctx, TenantTokenURL, req, &resp)
+		err := httpPost(s.ctx, TenantTokenURL, req, &resp)
 		if err != nil {
-			return "", err
+			return nil, err
 		}
 
 		if resp.Code != 0 {
-			return "", errors.New(resp.Msg)
+			return nil, errors.New(resp.Msg)
 		}
 
-		c.tenantToken = resp.TenantAccessToken
-		c.tenantTokenExpireAt = time.Now().Add(time.Duration(resp.Expire) * time.Second)
+		s.t = &Token{
+			AccessToken: resp.TenantAccessToken,
+			Expiry:      time.Now().Add(time.Duration(resp.Expire) * time.Second),
+		}
 	}
 
-	return c.tenantToken, nil
-}
-
-// ClientToken is an alias of TenantToken to implement the ClientTokenSource interface
-func (c *Config) ClientToken(ctx context.Context) (string, error) {
-	return c.TenantToken(ctx)
-}
-
-// TenantTokenValid returns true if the tenant token is valid
-func (c *Config) TenantTokenValid() bool {
-	return c.tenantToken != "" && time.Now().Add(time.Minute).Before(c.tenantTokenExpireAt)
+	return s.t, nil
 }

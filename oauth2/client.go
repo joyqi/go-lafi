@@ -7,34 +7,29 @@ import (
 )
 
 // NewClient returns http client with an authorized token.
-func NewClient(ctx context.Context, ts ClientTokenSource) *Client {
+func NewClient(ctx context.Context, ts TokenSource) *Client {
 	return &Client{
 		ctx: ctx,
 		ts:  ts,
 	}
 }
 
-// ClientTokenSource represents a token source that returns a client token.
-type ClientTokenSource interface {
-	ClientToken(ctx context.Context) (string, error)
-}
-
 // A Client represents a http client with an authorized token.
 type Client struct {
 	ctx context.Context
-	ts  ClientTokenSource
+	ts  TokenSource
 }
 
 // Request performs a http request to the given endpoint with the authorized token.
 func (c *Client) Request(method string, uri string, body interface{}, data interface{}) error {
-	token, err := c.ts.ClientToken(c.ctx)
+	token, err := c.ts.Token()
 	if err != nil {
 		return err
 	}
 
 	header := httptool.Header{
 		Key:   "Authorization",
-		Value: "Bearer " + token,
+		Value: "Bearer " + token.AccessToken,
 	}
 
 	return httptool.Request(c.ctx, &httptool.RequestOptions{

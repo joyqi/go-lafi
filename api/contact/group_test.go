@@ -13,7 +13,8 @@ var conf = &oauth2.Config{
 	RedirectURL: "https://example.com",
 }
 
-var client = oauth2.NewClient(context.Background(), conf)
+var ctx = context.Background()
+var client = oauth2.NewClient(ctx, conf.TenantTokenSource(ctx))
 
 func TestGroup_Create(t *testing.T) {
 	a := &Group{Client: client}

@@ -71,7 +71,7 @@ Initialize Feishu API client:
 ```go
 import "github.com/joyqi/go-feishu/oauth2"
 
-client := oauth2.NewClient(ctx, conf)
+client := oauth2.NewClient(ctx, conf.TenantTokenSource(ctx))
 ```
 
 Use the client to access the Feishu API. For example, to list all groups:
@@ -82,7 +82,7 @@ import (
     "github.com/joyqi/go-feishu/api/contact"
 )
 
-client := oauth2.NewClient(ctx, conf)
+client := oauth2.NewClient(ctx, conf.TenantTokenSource(ctx))
 api := &contact.Group{Client: client}
 
 api.SimpleList(&contact.GroupSimpleListParams{
