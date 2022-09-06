@@ -7,7 +7,7 @@ import (
 	"net/http"
 )
 
-var (
+const (
 	GroupURL             = "https://open.feishu.cn/open-apis/contact/v3/group/:group_id"
 	GroupCreateURL       = "https://open.feishu.cn/open-apis/contact/v3/group"
 	GroupSimpleListURL   = "https://open.feishu.cn/open-apis/contact/v3/group/simplelist"
@@ -24,8 +24,8 @@ const (
 	GroupTypeDynamic
 )
 
-// GroupCreateParams represents the params of Group.Create
-type GroupCreateParams struct {
+// GroupCreateBody represents the params of Group.Create
+type GroupCreateBody struct {
 	GroupId     string    `json:"group_id"`
 	Name        string    `json:"name"`
 	Description string    `json:"description"`
@@ -37,8 +37,8 @@ type GroupCreateData struct {
 	GroupId string `json:"group_id"`
 }
 
-// GroupPatchParams represents the params of Group.Patch
-type GroupPatchParams struct {
+// GroupPatchBody represents the params of Group.Patch
+type GroupPatchBody struct {
 	Name        string `json:"name"`
 	Description string `json:"description"`
 }
@@ -85,11 +85,11 @@ type GroupSimpleListData struct {
 
 // GroupMemberBelongParams represents the params of Group.MemberBelong
 type GroupMemberBelongParams struct {
-	MemberId     string     `url:"member_id"`
-	MemberIdType UserIdType `url:"member_id_type" default:"open_id"`
-	GroupType    GroupType  `url:"group_type" default:"1"`
-	PageSize     int        `url:"page_size" default:"500"`
-	PageToken    string     `url:"page_token"`
+	MemberId     string    `url:"member_id"`
+	MemberIdType string    `url:"member_id_type" default:"open_id"`
+	GroupType    GroupType `url:"group_type" default:"1"`
+	PageSize     int       `url:"page_size" default:"500"`
+	PageToken    string    `url:"page_token"`
 }
 
 // GroupMemberBelongData represents the response data of Group.MemberBelong
@@ -101,46 +101,46 @@ type GroupMemberBelongData struct {
 
 type Group api.Api
 
-// Create creates a group by given GroupCreateParams.
+// Create creates a group by given GroupCreateBody.
 // See https://open.feishu.cn/document/uAjLw4CM/ukTMukTMukTM/reference/contact-v3/group/create for more details.
-func (g *Group) Create(params *GroupCreateParams) (*GroupCreateData, error) {
-	if err := defaults.Set(params); err != nil {
+func (g *Group) Create(body *GroupCreateBody) (*GroupCreateData, error) {
+	if err := defaults.Set(body); err != nil {
 		return nil, err
 	}
 
-	return api.MakeApi[GroupCreateData](g.Client, http.MethodPost, GroupCreateURL, params)
+	return api.MakeApi[GroupCreateData](g.Client, http.MethodPost, GroupCreateURL, body)
 }
 
 // Delete deletes a group through group_id.
 // See https://open.feishu.cn/document/uAjLw4CM/ukTMukTMukTM/reference/contact-v3/group/delete for more details.
 func (g *Group) Delete(groupId string) (*GroupDeleteData, error) {
-	u := httptool.MakeTemplateURL(GroupURL, map[string]string{"group_id": groupId})
-	return api.MakeApi[GroupDeleteData](g.Client, http.MethodDelete, u, nil)
+	url := httptool.MakeTemplateURL(GroupURL, map[string]string{"group_id": groupId})
+	return api.MakeApi[GroupDeleteData](g.Client, http.MethodDelete, url, nil)
 }
 
 // Get retrieves the group information through group_id.
 // See https://open.feishu.cn/document/uAjLw4CM/ukTMukTMukTM/reference/contact-v3/group/get for more details.
 func (g *Group) Get(groupId string) (*GroupGetData, error) {
-	u := httptool.MakeTemplateURL(GroupURL, map[string]string{"group_id": groupId})
-	return api.MakeApi[GroupGetData](g.Client, http.MethodGet, u, nil)
+	url := httptool.MakeTemplateURL(GroupURL, map[string]string{"group_id": groupId})
+	return api.MakeApi[GroupGetData](g.Client, http.MethodGet, url, nil)
 }
 
-// Patch updates the specified group information by given GroupPatchParams.
+// Patch updates the specified group information by given GroupPatchBody.
 // See https://open.feishu.cn/document/uAjLw4CM/ukTMukTMukTM/reference/contact-v3/group/patch for more details.
-func (g *Group) Patch(groupId string, params *GroupPatchParams) (*GroupPatchData, error) {
-	u := httptool.MakeTemplateURL(GroupURL, map[string]string{"group_id": groupId})
-	return api.MakeApi[GroupPatchData](g.Client, http.MethodPatch, u, params)
+func (g *Group) Patch(groupId string, body *GroupPatchBody) (*GroupPatchData, error) {
+	url := httptool.MakeTemplateURL(GroupURL, map[string]string{"group_id": groupId})
+	return api.MakeApi[GroupPatchData](g.Client, http.MethodPatch, url, body)
 }
 
 // SimpleList retrieves the group list through given GroupSimpleListParams.
 // See https://open.feishu.cn/document/uAjLw4CM/ukTMukTMukTM/reference/contact-v3/group/simplelist for more details.
-func (g Group) SimpleList(params *GroupSimpleListParams) (*GroupSimpleListData, error) {
+func (g *Group) SimpleList(params *GroupSimpleListParams) (*GroupSimpleListData, error) {
 	if err := defaults.Set(params); err != nil {
 		return nil, err
 	}
 
-	u := httptool.MakeStructureURL(GroupSimpleListURL, params)
-	return api.MakeApi[GroupSimpleListData](g.Client, http.MethodGet, u, params)
+	url := httptool.MakeStructureURL(GroupSimpleListURL, params)
+	return api.MakeApi[GroupSimpleListData](g.Client, http.MethodGet, url, params)
 }
 
 // MemberBelong returns the groups that the member belongs to.
@@ -150,6 +150,6 @@ func (g *Group) MemberBelong(params *GroupMemberBelongParams) (*GroupMemberBelon
 		return nil, err
 	}
 
-	u := httptool.MakeStructureURL(GroupMemberBelongURL, params)
-	return api.MakeApi[GroupMemberBelongData](g.Client, http.MethodGet, u, nil)
+	url := httptool.MakeStructureURL(GroupMemberBelongURL, params)
+	return api.MakeApi[GroupMemberBelongData](g.Client, http.MethodGet, url, nil)
 }
