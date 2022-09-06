@@ -2,6 +2,7 @@ package oauth2
 
 import (
 	"context"
+	"github.com/joyqi/go-feishu/api"
 	"github.com/joyqi/go-feishu/httptool"
 	"net/url"
 	"sync"
@@ -34,6 +35,7 @@ type Config struct {
 // A TokenSource is anything that can return a token.
 type TokenSource interface {
 	Token() (*Token, error)
+	Client() api.Client
 }
 
 // TokenRequest represents a request to retrieve a token from the server
@@ -127,6 +129,14 @@ func (s *reuseTokenSource) Token() (*Token, error) {
 	}
 
 	return s.t, nil
+}
+
+// Client returns a client that uses the token source to retrieve the token
+func (s *reuseTokenSource) Client() api.Client {
+	return &tokenClient{
+		ctx: s.ctx,
+		ts:  s,
+	}
 }
 
 // refresh retrieves the token from the endpoint

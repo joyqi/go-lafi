@@ -3,6 +3,7 @@ package oauth2
 import (
 	"context"
 	"errors"
+	"github.com/joyqi/go-feishu/api"
 	"sync"
 	"time"
 )
@@ -78,4 +79,12 @@ func (s *tenantTokenSource) Token() (*Token, error) {
 	}
 
 	return s.t, nil
+}
+
+// Client returns a client that uses the tenant token source
+func (s *tenantTokenSource) Client() api.Client {
+	return &tokenClient{
+		ctx: s.ctx,
+		ts:  s,
+	}
 }

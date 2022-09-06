@@ -6,22 +6,14 @@ import (
 	"net/http"
 )
 
-// NewClient returns http client with an authorized token.
-func NewClient(ctx context.Context, ts TokenSource) *Client {
-	return &Client{
-		ctx: ctx,
-		ts:  ts,
-	}
-}
-
 // A Client represents a http client with an authorized token.
-type Client struct {
+type tokenClient struct {
 	ctx context.Context
 	ts  TokenSource
 }
 
 // Request performs a http request to the given endpoint with the authorized token.
-func (c *Client) Request(method string, uri string, body interface{}, data interface{}) error {
+func (c *tokenClient) Request(method string, uri string, body interface{}, data interface{}) error {
 	token, err := c.ts.Token()
 	if err != nil {
 		return err
