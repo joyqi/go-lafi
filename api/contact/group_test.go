@@ -13,11 +13,12 @@ var conf = &oauth2.Config{
 	RedirectURL: "https://example.com",
 }
 
-func TestGroup_Create(t *testing.T) {
-	c := conf.Client(context.Background())
-	a := &Group{Client: c}
+var client = conf.TenantTokenSource(context.Background()).Client()
 
-	data, err := a.Create(&GroupCreateParams{
+func TestGroup_Create(t *testing.T) {
+	a := &Group{Client: client}
+
+	data, err := a.Create(&GroupCreateBody{
 		GroupId: "test001",
 		Name:    "test group",
 	})
@@ -32,8 +33,7 @@ func TestGroup_Create(t *testing.T) {
 }
 
 func TestGroup_Get(t *testing.T) {
-	c := conf.Client(context.Background())
-	a := &Group{Client: c}
+	a := &Group{Client: client}
 
 	g, err := a.Get("test001")
 
@@ -45,10 +45,9 @@ func TestGroup_Get(t *testing.T) {
 }
 
 func TestGroup_Patch(t *testing.T) {
-	c := conf.Client(context.Background())
-	a := &Group{Client: c}
+	a := &Group{Client: client}
 
-	_, err := a.Patch("test001", &GroupPatchParams{
+	_, err := a.Patch("test001", &GroupPatchBody{
 		Name: "test group 2",
 	})
 
@@ -66,8 +65,7 @@ func TestGroup_Patch(t *testing.T) {
 }
 
 func TestGroup_SimpleList(t *testing.T) {
-	c := conf.Client(context.Background())
-	a := &Group{Client: c}
+	a := &Group{Client: client}
 
 	g, err := a.SimpleList(&GroupSimpleListParams{
 		PageSize: 10,
@@ -81,8 +79,7 @@ func TestGroup_SimpleList(t *testing.T) {
 }
 
 func TestGroup_Delete(t *testing.T) {
-	c := conf.Client(context.Background())
-	a := &Group{Client: c}
+	a := &Group{Client: client}
 
 	_, err := a.Delete("test001")
 
@@ -92,8 +89,7 @@ func TestGroup_Delete(t *testing.T) {
 }
 
 func TestGroup_MemberBelong(t *testing.T) {
-	c := conf.Client(context.Background())
-	a := &Group{Client: c}
+	a := &Group{Client: client}
 
 	_, err := a.MemberBelong(&GroupMemberBelongParams{
 		MemberId:     "9a4386bc",

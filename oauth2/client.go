@@ -6,30 +6,22 @@ import (
 	"net/http"
 )
 
-// Client returns http client with an authorized token.
-func (c *Config) Client(ctx context.Context) *Client {
-	return &Client{
-		ctx:  ctx,
-		conf: c,
-	}
-}
-
 // A Client represents a http client with an authorized token.
-type Client struct {
-	ctx  context.Context
-	conf *Config
+type tokenClient struct {
+	ctx context.Context
+	ts  TokenSource
 }
 
 // Request performs a http request to the given endpoint with the authorized token.
-func (c *Client) Request(method string, uri string, body interface{}, data interface{}) error {
-	token, err := c.conf.TenantToken(c.ctx)
+func (c *tokenClient) Request(method string, uri string, body interface{}, data interface{}) error {
+	token, err := c.ts.Token()
 	if err != nil {
 		return err
 	}
 
 	header := httptool.Header{
 		Key:   "Authorization",
-		Value: "Bearer " + token,
+		Value: "Bearer " + token.AccessToken,
 	}
 
 	return httptool.Request(c.ctx, &httptool.RequestOptions{
