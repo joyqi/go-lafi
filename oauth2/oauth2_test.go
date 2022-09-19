@@ -4,6 +4,7 @@ import (
 	"context"
 	"os"
 	"testing"
+	"time"
 )
 
 var conf = &Config{
@@ -26,5 +27,24 @@ func TestConfig_TenantToken(t *testing.T) {
 
 	if err != nil {
 		t.Error(err)
+	}
+}
+
+func TestReuseTokenSource_Token(t *testing.T) {
+	tk := &Token{
+		AccessToken:  os.Getenv("ACCESS_TOKEN"),
+		RefreshToken: os.Getenv("REFRESH_TOKEN"),
+		Expiry:       time.Now().Truncate(time.Hour),
+	}
+
+	ts := conf.TokenSource(context.Background(), tk)
+	nt, err := ts.Token()
+
+	if err != nil {
+		t.Error(err)
+	}
+
+	if tk.AccessToken == nt.AccessToken {
+		t.Fail()
 	}
 }

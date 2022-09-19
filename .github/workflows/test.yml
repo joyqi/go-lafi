@@ -24,4 +24,6 @@ jobs:
         env:
           APP_ID: '${{ secrets.FEISHU_APP_ID }}'
           APP_SECRET: '${{ secrets.FEISHU_APP_SECRET }}'
+          ACCESS_TOKEN: '${{ secrets.FEISHU_ACCESS_TOKEN }}'
+          REFRESH_TOKEN: '${{ secrets.FEISHU_REFRESH_TOKEN }}'
         run: go test -v ./...

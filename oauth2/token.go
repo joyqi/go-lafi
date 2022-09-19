@@ -31,7 +31,7 @@ func retrieveToken(ctx context.Context, endpointURL string, req interface{}, ts 
 		endpointURL,
 		req,
 		&resp,
-		httptool.Header{Key: "Authorization", Value: t.AccessToken},
+		httptool.Header{Key: "Authorization", Value: "Bearer " + t.AccessToken},
 	)
 
 	if err != nil {

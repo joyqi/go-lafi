@@ -44,12 +44,10 @@ type GroupPatchBody struct {
 }
 
 // GroupPatchData represents the response data of Group.Patch
-type GroupPatchData struct {
-}
+type GroupPatchData = api.EmptyData
 
 // GroupDeleteData represents the response data of Group.Delete
-type GroupDeleteData struct {
-}
+type GroupDeleteData = api.EmptyData
 
 // GroupGetData represents the response data of Group.Get
 type GroupGetData struct {
@@ -94,7 +92,7 @@ type GroupMemberBelongParams struct {
 
 // GroupMemberBelongData represents the response data of Group.MemberBelong
 type GroupMemberBelongData struct {
-	GroupList []string `json:"group_list,flow"`
+	GroupList []string `json:"group_list"`
 	HasMore   bool     `json:"has_more"`
 	PageToken string   `json:"page_token"`
 }
