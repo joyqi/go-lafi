@@ -42,9 +42,7 @@ func TestReuseTokenSource_Token(t *testing.T) {
 
 	if err != nil {
 		t.Error(err)
-	}
-
-	if tk.AccessToken == nt.AccessToken {
+	} else if tk.AccessToken == nt.AccessToken {
 		t.Fail()
 	}
 }

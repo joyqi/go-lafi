@@ -57,9 +57,7 @@ func TestRequest_JSONResponse(t *testing.T) {
 
 		if err != nil {
 			t.Error(err)
-		}
-
-		if !reflect.DeepEqual(req, resp.JSON) {
+		} else if !reflect.DeepEqual(req, resp.JSON) {
 			t.Fail()
 		}
 	}

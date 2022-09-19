@@ -25,9 +25,7 @@ func TestGroup_Create(t *testing.T) {
 
 	if err != nil {
 		t.Error(err)
-	}
-
-	if data.GroupId != "test001" {
+	} else if data.GroupId != "test001" {
 		t.Fail()
 	}
 }
@@ -52,7 +50,7 @@ func TestGroup_Patch(t *testing.T) {
 	})
 
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	g, err := a.Get("test001")
