@@ -45,7 +45,7 @@ func retrieveToken(ctx context.Context, endpointURL string, req interface{}, ts 
 	token := &Token{
 		AccessToken:  resp.Data.AccessToken,
 		RefreshToken: resp.Data.RefreshToken,
-		Expiry:       time.Unix(resp.Data.ExpiresIn, 0),
+		Expiry:       time.Now().Add(time.Duration(resp.Data.ExpiresIn) * time.Second),
 	}
 
 	return token, nil
