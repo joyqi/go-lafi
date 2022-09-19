@@ -17,7 +17,7 @@ var conf = &oauth2.Config{
 var token = &oauth2.Token{
 	AccessToken:  os.Getenv("ACCESS_TOKEN"),
 	RefreshToken: os.Getenv("REFRESH_TOKEN"),
-	Expiry:       time.Now().Add(time.Hour),
+	Expiry:       time.Now().Truncate(time.Hour),
 }
 
 func TestAuthen_UserInfo(t *testing.T) {
