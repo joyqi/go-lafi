@@ -4,7 +4,6 @@ import (
 	"context"
 	"os"
 	"testing"
-	"time"
 )
 
 var conf = &Config{
@@ -30,11 +29,29 @@ func TestConfig_TenantToken(t *testing.T) {
 	}
 }
 
+/*
 func TestReuseTokenSource_Token(t *testing.T) {
-	tk := &Token{
-		AccessToken:  os.Getenv("ACCESS_TOKEN"),
-		RefreshToken: os.Getenv("REFRESH_TOKEN"),
-		Expiry:       time.Now().Truncate(time.Hour),
+	var tk *Token
+	ch := make(chan *Token, 1)
+
+	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		tk, err := conf.Exchange(context.Background(), r.URL.Query().Get("code"))
+
+		if err != nil {
+			t.Error(err)
+		} else {
+			ch <- tk
+		}
+	}))
+
+	defer server.Close()
+	fmt.Println(server.URL)
+
+	select {
+	case tk = <-ch:
+		if tk == nil {
+			t.Fail()
+		}
 	}
 
 	ts := conf.TokenSource(context.Background(), tk)
@@ -46,3 +63,4 @@ func TestReuseTokenSource_Token(t *testing.T) {
 		t.Fail()
 	}
 }
+*/
