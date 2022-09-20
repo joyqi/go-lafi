@@ -11,6 +11,13 @@ import (
 
 const AuthURL = "https://open.feishu.cn/open-apis/authen/v1/index"
 
+type Type int8
+
+const (
+	TypeFeishu Type = iota
+	TypeLark
+)
+
 // Config represents the configuration of the oauth2 service
 type Config struct {
 	// AppID is the app id of oauth2.
@@ -29,6 +36,9 @@ type Config struct {
 
 	// RedirectURL is the URL to redirect users going through
 	RedirectURL string
+
+	// Type represents the type of the app.
+	Type
 
 	// once is used to ensure tts is initialized only once.
 	once sync.Once
