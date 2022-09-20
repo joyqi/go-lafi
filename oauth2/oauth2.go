@@ -29,13 +29,12 @@ type Config struct {
 	once sync.Once
 
 	// tts is the tenant token source
-	tts TokenSource
+	tts ClientSource
 }
 
 // A TokenSource is anything that can return a token.
 type TokenSource interface {
 	Token() (*Token, error)
-	Client() api.Client
 }
 
 // TokenRequest represents a request to retrieve a token from the server
@@ -102,7 +101,7 @@ func (c *Config) Exchange(ctx context.Context, code string) (*Token, error) {
 }
 
 // TokenSource returns a TokenSource to grant token access
-func (c *Config) TokenSource(ctx context.Context, t *Token) TokenSource {
+func (c *Config) TokenSource(ctx context.Context, t *Token) ClientSource {
 	return &reuseTokenSource{
 		ctx:  ctx,
 		conf: c,

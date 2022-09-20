@@ -2,11 +2,33 @@ package oauth2
 
 import (
 	"context"
+	"github.com/joyqi/go-feishu/api"
 	"github.com/joyqi/go-feishu/httptool"
 	"net/http"
 )
 
-// A Client represents a http client with an authorized token.
+// ClientSource represents the source which provides a Client method to retrieve a Client.
+type ClientSource interface {
+	TokenSource
+	Client() api.Client
+}
+
+// simpleClient is a client that does not use a token.
+type simpleClient struct {
+	ctx context.Context
+}
+
+// Request performs a http request to the given endpoint without the authorized token.
+func (c *simpleClient) Request(method string, uri string, body interface{}, data interface{}) error {
+	return httptool.Request(c.ctx, &httptool.RequestOptions{
+		URI:         uri,
+		Method:      method,
+		ContentType: "application/json; charset=utf-8",
+		JSONBody:    body,
+	}, data)
+}
+
+// tokenClient represents a client that performs requests with an authorized token.
 type tokenClient struct {
 	ctx context.Context
 	ts  TokenSource
