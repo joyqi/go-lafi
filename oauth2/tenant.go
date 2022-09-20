@@ -2,42 +2,28 @@ package oauth2
 
 import (
 	"context"
-	"errors"
 	"github.com/joyqi/go-feishu/api"
 	"github.com/joyqi/go-feishu/api/auth"
 	"sync"
 	"time"
 )
 
-type AppConfig struct {
-	AppTicket string
-	TenantKey string
-}
-
 // TenantTokenSource returns a token source that retrieves tokens from the tenant token endpoint
 func (c *Config) TenantTokenSource(ctx context.Context) ClientSource {
 	c.once.Do(func() {
-		c.tts = &tenantTokenSource{
-			ctx:  ctx,
-			conf: c,
-		}
-	})
+		var ats *appTokenSource
 
-	return c.tts
-}
-
-// AppTenantTokenSource returns a token source that retrieves tokens from the app token endpoint
-func (c *Config) AppTenantTokenSource(ctx context.Context, appConfig *AppConfig) ClientSource {
-	c.once.Do(func() {
-		c.tts = &tenantTokenSource{
-			ctx:  ctx,
-			conf: c,
-			ats: &appTokenSource{
+		if c.AppTicket != "" && c.TenantKey != "" {
+			ats = &appTokenSource{
 				ctx:  ctx,
 				conf: c,
-				ac:   appConfig,
-			},
-			ac: appConfig,
+			}
+		}
+
+		c.tts = &tenantTokenSource{
+			ctx:  ctx,
+			conf: c,
+			ats:  ats,
 		}
 	})
 
@@ -49,7 +35,6 @@ type tenantTokenSource struct {
 	ctx  context.Context
 	conf *Config
 	t    *Token
-	ac   *AppConfig
 	ats  *appTokenSource
 	mu   sync.Mutex
 }
@@ -60,8 +45,10 @@ func (s *tenantTokenSource) Token() (*Token, error) {
 
 	s.mu.Lock()
 	if s.t == nil || !s.t.Valid() {
-		var err error
-		var t *Token
+		var (
+			err error
+			t   *Token
+		)
 
 		if s.ats != nil {
 			t, err = s.retrieveCommonToken()
@@ -107,10 +94,6 @@ func (s *tenantTokenSource) retrieveInternalToken() (*Token, error) {
 }
 
 func (s *tenantTokenSource) retrieveCommonToken() (*Token, error) {
-	if s.ats == nil {
-		return nil, errors.New("no app ticket")
-	}
-
 	t, err := s.ats.Token()
 	if err != nil {
 		return nil, err
@@ -121,7 +104,7 @@ func (s *tenantTokenSource) retrieveCommonToken() (*Token, error) {
 
 	tk, expire, err := authApi.CommonAccessToken(&auth.TenantCommonBody{
 		AppAccessToken: t.AccessToken,
-		TenantKey:      s.ac.TenantKey,
+		TenantKey:      s.conf.TenantKey,
 	})
 
 	if err != nil {
@@ -137,7 +120,6 @@ func (s *tenantTokenSource) retrieveCommonToken() (*Token, error) {
 type appTokenSource struct {
 	ctx  context.Context
 	conf *Config
-	ac   *AppConfig
 	t    *Token
 }
 
@@ -150,7 +132,7 @@ func (s *appTokenSource) Token() (*Token, error) {
 		tk, expire, err := authApi.CommonAccessToken(&auth.AppCommonBody{
 			AppID:     s.conf.AppID,
 			AppSecret: s.conf.AppSecret,
-			AppTicket: s.ac.AppTicket,
+			AppTicket: s.conf.AppTicket,
 		})
 
 		if err != nil {

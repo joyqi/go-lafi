@@ -26,9 +26,9 @@ type UserInfoData struct {
 	TenantKey       string `json:"tenant_key"`
 }
 
-type Authen api.Api
+type UserInfo api.Api
 
-// UserInfo fetches the user info through the access token.
-func (a *Authen) UserInfo() (data *UserInfoData, err error) {
+// Get fetches the user info through the access token.
+func (a *UserInfo) Get() (data *UserInfoData, err error) {
 	return api.MakeApi[UserInfoData](a.Client, http.MethodGet, UserInfoURL, nil)
 }

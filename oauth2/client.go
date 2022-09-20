@@ -4,7 +4,6 @@ import (
 	"context"
 	"github.com/joyqi/go-feishu/api"
 	"github.com/joyqi/go-feishu/httptool"
-	"net/http"
 )
 
 // ClientSource represents the source which provides a Client method to retrieve a Client.
@@ -50,16 +49,6 @@ func (c *tokenClient) Request(method string, uri string, body interface{}, data 
 		URI:         uri,
 		Method:      method,
 		Headers:     []httptool.Header{header},
-		ContentType: "application/json; charset=utf-8",
-		JSONBody:    body,
-	}, data)
-}
-
-func httpPost(ctx context.Context, uri string, body interface{}, data interface{}, headers ...httptool.Header) error {
-	return httptool.Request(ctx, &httptool.RequestOptions{
-		URI:         uri,
-		Method:      http.MethodPost,
-		Headers:     headers,
 		ContentType: "application/json; charset=utf-8",
 		JSONBody:    body,
 	}, data)

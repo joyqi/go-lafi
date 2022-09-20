@@ -3,16 +3,13 @@ package oauth2
 import (
 	"context"
 	"github.com/joyqi/go-feishu/api"
+	"github.com/joyqi/go-feishu/api/authen"
 	"github.com/joyqi/go-feishu/httptool"
 	"net/url"
 	"sync"
 )
 
-const (
-	AuthURL         = "https://open.feishu.cn/open-apis/authen/v1/index"
-	TokenURL        = "https://open.feishu.cn/open-apis/authen/v1/access_token"
-	RefreshTokenURL = "https://open.feishu.cn/open-apis/authen/v1/refresh_access_token"
-)
+const AuthURL = "https://open.feishu.cn/open-apis/authen/v1/index"
 
 // Config represents the configuration of the oauth2 service
 type Config struct {
@@ -21,6 +18,14 @@ type Config struct {
 
 	// AppSecret is the app secret of oauth2.
 	AppSecret string
+
+	// AppTicket represents the ticket of the app.
+	// It's used to retrieve the tenant access token.
+	// If you're using the internal app, please leave it empty.
+	AppTicket string
+
+	// TenantKey represents the key of the tenant.
+	TenantKey string
 
 	// RedirectURL is the URL to redirect users going through
 	RedirectURL string
@@ -35,42 +40,6 @@ type Config struct {
 // A TokenSource is anything that can return a token.
 type TokenSource interface {
 	Token() (*Token, error)
-}
-
-// TokenRequest represents a request to retrieve a token from the server
-type TokenRequest struct {
-	GrantType string `json:"grant_type"`
-	Code      string `json:"code"`
-}
-
-// RefreshTokenRequest represents a request to refresh the token from the server
-type RefreshTokenRequest struct {
-	GrantType    string `json:"grant_type"`
-	RefreshToken string `json:"refresh_token"`
-}
-
-// TokenResponse represents the response from the Token service
-type TokenResponse struct {
-	// Code is the response status code
-	Code int `json:"code"`
-
-	// Msg is the response message in the response body
-	Msg string `json:"msg"`
-
-	// Data is the response body data
-	Data struct {
-		// OpenId represents the open ID of the user
-		OpenId string `json:"open_id"`
-
-		// AccessToken is the token used to access the application
-		AccessToken string `json:"access_token"`
-
-		// RefreshToken is the token used to refresh the user's access token
-		RefreshToken string `json:"refresh_token"`
-
-		// ExpiresIn is the number of seconds the token will be valid
-		ExpiresIn int64 `json:"expires_in"`
-	} `json:"data"`
 }
 
 // AuthCodeURL is the URL to redirect users going through authentication
@@ -92,12 +61,19 @@ func (c *Config) AuthCodeURL(state string) string {
 
 // Exchange retrieve the token from access token endpoint
 func (c *Config) Exchange(ctx context.Context, code string) (*Token, error) {
-	req := &TokenRequest{
+	req := &authen.AccessTokenCreateBody{
 		GrantType: "authorization_code",
 		Code:      code,
 	}
 
-	return retrieveToken(ctx, TokenURL, req, c.TenantTokenSource(ctx))
+	tokenApi := &authen.AccessToken{Client: c.TenantTokenSource(ctx).Client()}
+	tk, err := tokenApi.Create(req)
+
+	if err != nil {
+		return nil, err
+	}
+
+	return NewToken(tk), nil
 }
 
 // TokenSource returns a TokenSource to grant token access
@@ -140,10 +116,17 @@ func (s *reuseTokenSource) Client() api.Client {
 
 // refresh retrieves the token from the endpoint
 func (s *reuseTokenSource) refresh() (*Token, error) {
-	req := &RefreshTokenRequest{
+	req := &authen.AccessTokenRefreshBody{
 		RefreshToken: s.t.RefreshToken,
 		GrantType:    "refresh_token",
 	}
 
-	return retrieveToken(s.ctx, RefreshTokenURL, req, s.conf.TenantTokenSource(s.ctx))
+	tokenApi := &authen.AccessToken{Client: s.conf.TenantTokenSource(s.ctx).Client()}
+	tk, err := tokenApi.Refresh(req)
+
+	if err != nil {
+		return nil, err
+	}
+
+	return NewToken(tk), nil
 }
