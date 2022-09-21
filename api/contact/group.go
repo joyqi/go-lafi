@@ -2,16 +2,16 @@ package contact
 
 import (
 	"github.com/creasty/defaults"
-	"github.com/joyqi/go-feishu/api"
-	"github.com/joyqi/go-feishu/httptool"
+	"github.com/joyqi/go-lafi/api"
+	"github.com/joyqi/go-lafi/httptool"
 	"net/http"
 )
 
 const (
-	GroupURL             = "https://open.feishu.cn/open-apis/contact/v3/group/:group_id"
-	GroupCreateURL       = "https://open.feishu.cn/open-apis/contact/v3/group"
-	GroupSimpleListURL   = "https://open.feishu.cn/open-apis/contact/v3/group/simplelist"
-	GroupMemberBelongURL = "https://open.feishu.cn/open-apis/contact/v3/group/member_belong"
+	GroupURL             = "/contact/v3/group/:group_id"
+	GroupCreateURL       = "/contact/v3/group"
+	GroupSimpleListURL   = "/contact/v3/group/simplelist"
+	GroupMemberBelongURL = "/contact/v3/group/member_belong"
 )
 
 // GroupType represents the type of group.
@@ -44,12 +44,10 @@ type GroupPatchBody struct {
 }
 
 // GroupPatchData represents the response data of Group.Patch
-type GroupPatchData struct {
-}
+type GroupPatchData = api.EmptyData
 
 // GroupDeleteData represents the response data of Group.Delete
-type GroupDeleteData struct {
-}
+type GroupDeleteData = api.EmptyData
 
 // GroupGetData represents the response data of Group.Get
 type GroupGetData struct {
@@ -94,7 +92,7 @@ type GroupMemberBelongParams struct {
 
 // GroupMemberBelongData represents the response data of Group.MemberBelong
 type GroupMemberBelongData struct {
-	GroupList []string `json:"group_list,flow"`
+	GroupList []string `json:"group_list"`
 	HasMore   bool     `json:"has_more"`
 	PageToken string   `json:"page_token"`
 }

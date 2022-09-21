@@ -8,6 +8,9 @@ type Api struct {
 	Client
 }
 
+type EmptyData struct {
+}
+
 // Client defines the interface of api client
 type Client interface {
 	Request(method string, uri string, body interface{}, data interface{}) error
