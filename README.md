@@ -47,8 +47,6 @@ var conf = &oauth2.Config{
 }
 ```
 
-```go
-
 Get the authorization URL:
 
 ```go
@@ -68,7 +66,7 @@ ts := conf.TokenSource(ctx, token)
 token, err := ts.Token()
 ```
 
-### Feishu API
+### Feishu/Lark API
 
 Features:
 
