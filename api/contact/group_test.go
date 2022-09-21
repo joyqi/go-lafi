@@ -2,7 +2,7 @@ package contact
 
 import (
 	"context"
-	"github.com/joyqi/go-feishu/oauth2"
+	"github.com/joyqi/go-lafi/oauth2"
 	"os"
 	"testing"
 )
@@ -11,6 +11,7 @@ var conf = &oauth2.Config{
 	AppID:       os.Getenv("APP_ID"),
 	AppSecret:   os.Getenv("APP_SECRET"),
 	RedirectURL: "https://example.com",
+	Type:        oauth2.TypeFeishu,
 }
 
 var client = conf.TenantTokenSource(context.Background()).Client()
@@ -25,9 +26,7 @@ func TestGroup_Create(t *testing.T) {
 
 	if err != nil {
 		t.Error(err)
-	}
-
-	if data.GroupId != "test001" {
+	} else if data.GroupId != "test001" {
 		t.Fail()
 	}
 }
@@ -52,7 +51,7 @@ func TestGroup_Patch(t *testing.T) {
 	})
 
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	g, err := a.Get("test001")

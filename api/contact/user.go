@@ -2,13 +2,13 @@ package contact
 
 import (
 	"github.com/creasty/defaults"
-	"github.com/joyqi/go-feishu/api"
-	"github.com/joyqi/go-feishu/httptool"
+	"github.com/joyqi/go-lafi/api"
+	"github.com/joyqi/go-lafi/httptool"
 	"net/http"
 )
 
 const (
-	UserCreateURL = "https://open.feishu.cn/open-apis/contact/v3/users"
+	UserCreateURL = "/contact/v3/users"
 )
 
 const (
