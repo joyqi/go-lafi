@@ -1,6 +1,6 @@
 package auth
 
-import "github.com/joyqi/go-feishu/api"
+import "github.com/joyqi/go-lafi/api"
 
 const (
 	AppCommonURL   = "/auth/v3/app_access_token"

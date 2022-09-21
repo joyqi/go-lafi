@@ -2,8 +2,8 @@ package oauth2
 
 import (
 	"context"
-	"github.com/joyqi/go-feishu/api"
-	"github.com/joyqi/go-feishu/httptool"
+	"github.com/joyqi/go-lafi/api"
+	"github.com/joyqi/go-lafi/httptool"
 )
 
 // ClientSource represents the source which provides a Client method to retrieve a Client.

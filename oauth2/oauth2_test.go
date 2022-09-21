@@ -10,6 +10,7 @@ var conf = &Config{
 	AppID:       os.Getenv("APP_ID"),
 	AppSecret:   os.Getenv("APP_SECRET"),
 	RedirectURL: "https://example.com",
+	Type:        TypeFeishu,
 }
 
 func TestConfig_AuthCodeURL(t *testing.T) {

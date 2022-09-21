@@ -1,7 +1,7 @@
 package authen
 
 import (
-	"github.com/joyqi/go-feishu/api"
+	"github.com/joyqi/go-lafi/api"
 	"net/http"
 )
 

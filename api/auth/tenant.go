@@ -1,6 +1,6 @@
 package auth
 
-import "github.com/joyqi/go-feishu/api"
+import "github.com/joyqi/go-lafi/api"
 
 const (
 	TenantCommonURL   = "/auth/v3/tenant_access_token"

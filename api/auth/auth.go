@@ -3,7 +3,7 @@ package auth
 import (
 	"encoding/json"
 	"errors"
-	"github.com/joyqi/go-feishu/api"
+	"github.com/joyqi/go-lafi/api"
 )
 
 // TokenResponse represents the common token response structure

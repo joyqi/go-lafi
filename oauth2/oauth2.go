@@ -2,9 +2,9 @@ package oauth2
 
 import (
 	"context"
-	"github.com/joyqi/go-feishu/api"
-	"github.com/joyqi/go-feishu/api/authen"
-	"github.com/joyqi/go-feishu/httptool"
+	"github.com/joyqi/go-lafi/api"
+	"github.com/joyqi/go-lafi/api/authen"
+	"github.com/joyqi/go-lafi/httptool"
 	"net/url"
 	"sync"
 )
@@ -14,8 +14,8 @@ const AuthURL = "/authen/v1/index"
 type Type int8
 
 const (
-	TypeFeishu Type = iota
-	TypeLark
+	TypeLark Type = iota
+	TypeFeishu
 )
 
 // Config represents the configuration of the oauth2 service

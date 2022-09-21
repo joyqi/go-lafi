@@ -1,7 +1,7 @@
 package oauth2
 
 import (
-	"github.com/joyqi/go-feishu/api/authen"
+	"github.com/joyqi/go-lafi/api/authen"
 	"time"
 )
 

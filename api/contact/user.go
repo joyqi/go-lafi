@@ -2,8 +2,8 @@ package contact
 
 import (
 	"github.com/creasty/defaults"
-	"github.com/joyqi/go-feishu/api"
-	"github.com/joyqi/go-feishu/httptool"
+	"github.com/joyqi/go-lafi/api"
+	"github.com/joyqi/go-lafi/httptool"
 	"net/http"
 )
 

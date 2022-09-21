@@ -1,4 +1,4 @@
-module github.com/joyqi/go-feishu
+module github.com/joyqi/go-lafi
 
 go 1.18
 

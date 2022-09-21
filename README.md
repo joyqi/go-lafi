@@ -1,10 +1,12 @@
-# go-feishu
+# go-lafi
 
-go-feishu is a Go client library for accessing the Feishu API. 
+**lafi = lark + feishu**
 
-> As of now I am writing this library, there is no official Feishu SDK for Go.
+go-lafi is a Go client library for accessing the Lark/Feishu API. 
+
+> As of now I am writing this library, there is no official Lark/Feishu SDK for Go.
 > Although Bytedance is the fastest growing tech company in China,
-> seems like they don't want to hire a Go developer to write a Go SDK for Feishu. 😂
+> seems like they don't want to hire a Go developer to write a Go SDK for Lark/Feishu. 😂
 
 The goals of this library are:
 
@@ -15,17 +17,17 @@ The goals of this library are:
 ## Installation
 
 ```bash
-go get github.com/joyqi/go-feishu
+go get github.com/joyqi/go-lafi
 ```
 
 ## Usage
 
 ### OAuth2 Authentication
 
-Initialize Feishu client with OAuth2 authentication:
+Initialize Lark client with OAuth2 authentication:
 
 ```go
-import "github.com/joyqi/go-feishu/oauth2"
+import "github.com/joyqi/go-lafi/oauth2"
 
 var conf = &oauth2.Config{
     AppID:        "your-client-id",
@@ -34,16 +36,16 @@ var conf = &oauth2.Config{
 }
 ```
 
-For Lark, you can specify the `Type` field to `TypeLark`:
+For Feishu, you can specify the `Type` field to `TypeFeishu`:
 
 ```go
-import "github.com/joyqi/go-feishu/oauth2"
+import "github.com/joyqi/go-lafi/oauth2"
 
 var conf = &oauth2.Config{
     AppID:        "your-client-id",
     AppSecret:    "your-client-secret",
     RedirectURL:  "your-redirect-url",
-    Type:         oauth2.TypeLark,
+    Type:         oauth2.TypeFeishu,
 }
 ```
 
@@ -66,7 +68,7 @@ ts := conf.TokenSource(ctx, token)
 token, err := ts.Token()
 ```
 
-### Feishu/Lark API
+### Lark/Feishu API
 
 Features:
 
@@ -79,20 +81,20 @@ Features:
   - [ ] CustomAttr
   - [ ] Scope
 
-Initialize Feishu API client:
+Initialize API client:
 
 ```go
-import "github.com/joyqi/go-feishu/oauth2"
+import "github.com/joyqi/go-lafi/oauth2"
 
 client := conf.TenantTokenSource(ctx).Client()
 ```
 
-Use the client to access the Feishu API. For example, to list all groups:
+Use the client to access the API. For example, to list all groups:
 
 ```go
 import (
-    "github.com/joyqi/go-feishu/oauth2"
-    "github.com/joyqi/go-feishu/api/contact"
+    "github.com/joyqi/go-lafi/oauth2"
+    "github.com/joyqi/go-lafi/api/contact"
 )
 
 client := conf.TenantTokenSource(ctx).Client()
