@@ -9,7 +9,7 @@ import (
 	"sync"
 )
 
-const AuthURL = "https://open.feishu.cn/open-apis/authen/v1/index"
+const AuthURL = "/authen/v1/index"
 
 type Type int8
 
@@ -66,7 +66,7 @@ func (c *Config) AuthCodeURL(state string) string {
 		v.Set("state", state)
 	}
 
-	return httptool.MakeURL(AuthURL, v)
+	return httptool.MakeURL(adjustURL(c.Type, AuthURL), v)
 }
 
 // Exchange retrieve the token from access token endpoint
@@ -121,6 +121,7 @@ func (s *reuseTokenSource) Client() api.Client {
 	return &tokenClient{
 		ctx: s.ctx,
 		ts:  s,
+		t:   s.conf.Type,
 	}
 }
 

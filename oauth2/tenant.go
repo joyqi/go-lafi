@@ -71,6 +71,7 @@ func (s *tenantTokenSource) Client() api.Client {
 	return &tokenClient{
 		ctx: s.ctx,
 		ts:  s,
+		t:   s.conf.Type,
 	}
 }
 

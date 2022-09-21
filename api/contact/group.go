@@ -8,10 +8,10 @@ import (
 )
 
 const (
-	GroupURL             = "https://open.feishu.cn/open-apis/contact/v3/group/:group_id"
-	GroupCreateURL       = "https://open.feishu.cn/open-apis/contact/v3/group"
-	GroupSimpleListURL   = "https://open.feishu.cn/open-apis/contact/v3/group/simplelist"
-	GroupMemberBelongURL = "https://open.feishu.cn/open-apis/contact/v3/group/member_belong"
+	GroupURL             = "/contact/v3/group/:group_id"
+	GroupCreateURL       = "/contact/v3/group"
+	GroupSimpleListURL   = "/contact/v3/group/simplelist"
+	GroupMemberBelongURL = "/contact/v3/group/member_belong"
 )
 
 // GroupType represents the type of group.

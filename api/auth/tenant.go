@@ -3,8 +3,8 @@ package auth
 import "github.com/joyqi/go-feishu/api"
 
 const (
-	TenantCommonURL   = "https://open.feishu.cn/open-apis/auth/v3/tenant_access_token"
-	TenantInternalURL = "https://open.feishu.cn/open-apis/auth/v3/tenant_access_token/internal"
+	TenantCommonURL   = "/auth/v3/tenant_access_token"
+	TenantInternalURL = "/auth/v3/tenant_access_token/internal"
 )
 
 // TenantCommonBody represents a request to retrieve a tenant token

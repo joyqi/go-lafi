@@ -3,8 +3,8 @@ package auth
 import "github.com/joyqi/go-feishu/api"
 
 const (
-	AppCommonURL   = "https://open.feishu.cn/open-apis/auth/v3/app_access_token"
-	AppInternalURL = "https://open.feishu.cn/open-apis/auth/v3/app_access_token/internal"
+	AppCommonURL   = "/auth/v3/app_access_token"
+	AppInternalURL = "/auth/v3/app_access_token/internal"
 )
 
 // AppCommonBody represents a request to retrieve an app token

@@ -6,7 +6,7 @@ import (
 )
 
 const (
-	UserInfoURL = "https://open.feishu.cn/open-apis/authen/v1/user_info"
+	UserInfoURL = "/authen/v1/user_info"
 )
 
 // UserInfoData represents the response data of UserInfo

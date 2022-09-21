@@ -8,7 +8,7 @@ import (
 )
 
 const (
-	UserCreateURL = "https://open.feishu.cn/open-apis/contact/v3/users"
+	UserCreateURL = "/contact/v3/users"
 )
 
 const (

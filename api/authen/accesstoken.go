@@ -6,8 +6,8 @@ import (
 )
 
 const (
-	AccessTokenURL        = "https://open.feishu.cn/open-apis/authen/v1/access_token"
-	AccessTokenRefreshURL = "https://open.feishu.cn/open-apis/authen/v1/refresh_access_token"
+	AccessTokenURL        = "/authen/v1/access_token"
+	AccessTokenRefreshURL = "/authen/v1/refresh_access_token"
 )
 
 // AccessTokenCreateBody represents the request body of creating AccessToken

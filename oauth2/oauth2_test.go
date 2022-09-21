@@ -13,7 +13,7 @@ var conf = &Config{
 }
 
 func TestConfig_AuthCodeURL(t *testing.T) {
-	target := AuthURL + "?app_id=" + conf.AppID +
+	target := adjustURL(TypeFeishu, AuthURL) + "?app_id=" + conf.AppID +
 		"&redirect_uri=https%3A%2F%2Fexample.com&response_type=code&state=test"
 	if conf.AuthCodeURL("test") != target {
 		t.Fail()

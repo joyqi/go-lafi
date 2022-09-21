@@ -34,6 +34,21 @@ var conf = &oauth2.Config{
 }
 ```
 
+For Lark, you can specify the `Type` field to `TypeLark`:
+
+```go
+import "github.com/joyqi/go-feishu/oauth2"
+
+var conf = &oauth2.Config{
+    AppID:        "your-client-id",
+    AppSecret:    "your-client-secret",
+    RedirectURL:  "your-redirect-url",
+    Type:         oauth2.TypeLark,
+}
+```
+
+```go
+
 Get the authorization URL:
 
 ```go
